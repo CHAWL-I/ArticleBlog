@@ -411,3 +411,30 @@
 .notion-equation.notion-equation-block{
   align-items: center;
 }
+
+/* 1단계: ● (채워진 동그라미) */
+.notion-list li {
+  list-style-type: none;
+  position: relative;
+  padding-left: 20px;
+}
+
+.notion-list li::before {
+  content: "●"; /* 채워진 동그라미 */
+  position: relative;
+  left: -12px;
+  top: -2px;
+  font-size: 0.4em;
+  color: #333;
+}
+
+/* 2단계: ○ (빈 동그라미) */
+.notion-list li li::before {
+  content: "○" !important;/* 빈 동그라미 */
+}
+
+/* 3단계: ■ (네모) */
+.notion-list li li li::before {
+  content: "■" !important; /* 네모 */
+}
+
