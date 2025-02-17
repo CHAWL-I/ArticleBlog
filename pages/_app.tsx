@@ -1,37 +1,8 @@
-// used for rendering equations (optional)
-import 'katex/dist/katex.min.css'
-// used for code syntax highlighting (optional)
-import 'prismjs/themes/prism-coy.css'
-// core styles shared by all of react-notion-x (required)
-import 'react-notion-x/src/styles.css'
-// global styles shared across the entire site
-import 'styles/global.css'
-// this might be better for dark mode
-// import 'prismjs/themes/prism-okaidia.css'
-// global style overrides for notion
-import 'styles/notion.css'
-// global style overrides for prism theme (optional)
-import 'styles/prism-theme.css'
-
 import type { AppProps } from 'next/app'
-import * as Fathom from 'fathom-client'
-import { useRouter } from 'next/router'
-import posthog from 'posthog-js'
 import * as React from 'react'
-
-import localFont from 'next/font/local'
-// ✅ Pretendard 폰트 추가
-const pretendard = localFont({
-  src: '../public/fonts/PretendardGOVVariable.woff2',
-  display: 'swap',
-  variable: '--font-primary'
-})
-// ✅ WantedSans 폰트 추가
-const wanted = localFont({
-  src: '../public/fonts/WantedSansVariable.woff2',
-  display: 'swap',
-  variable: '--font-wanted'
-})
+import { useRouter } from 'next/router'
+import * as Fathom from 'fathom-client'
+import posthog from 'posthog-js'
 
 import { bootstrap } from '@/lib/bootstrap-client'
 import {
@@ -41,6 +12,28 @@ import {
   posthogConfig,
   posthogId
 } from '@/lib/config'
+
+// ✅ 폰트 로컬 임포트
+import localFont from 'next/font/local'
+const pretendard = localFont({
+  src: '../public/fonts/PretendardGOVVariable.woff2',
+  display: 'swap',
+  variable: '--font-primary'
+})
+const wanted = localFont({
+  src: '../public/fonts/WantedSansVariable.woff2',
+  display: 'swap',
+  variable: '--font-wanted'
+})
+
+// ✅ 스타일 관련 import (CSS 관련 파일은 가장 마지막에 배치)
+import 'katex/dist/katex.min.css' // 수식 렌더링
+import 'prismjs/themes/prism-coy.css' // 코드 하이라이팅
+import 'react-notion-x/src/styles.css' // Notion 스타일
+import 'styles/global.css' // 전역 스타일
+import 'styles/notion.css' // Notion 스타일 오버라이드
+import 'styles/prism-theme.css' // Prism 테마
+import 'prismjs/themes/prism-okaidia.css' // 다크 모드용 (필요하면 활성화)
 
 if (!isServer) {
   bootstrap()
@@ -54,7 +47,6 @@ export default function App({ Component, pageProps }: AppProps) {
       if (fathomId) {
         Fathom.trackPageview()
       }
-
       if (posthogId) {
         posthog.capture('$pageview')
       }
@@ -81,4 +73,3 @@ export default function App({ Component, pageProps }: AppProps) {
     </main>
   )
 }
-
