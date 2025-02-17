@@ -9,10 +9,10 @@ export default function TableOfContents() {
     console.log("⏳ useEffect 실행됨");
 
     // ✅ 목차를 이동할 부모 요소 찾기
-    const targetParent = document.querySelector(".notion-page-content.notion-page-content-has-aside.notion-page-content-has-toc");
+    const targetParent = document.querySelector(".notion-page");
 
     if (!targetParent) {
-      console.log("⚠️ notion-page-content 요소를 찾을 수 없음");
+      console.log("⚠️ notion-page 요소를 찾을 수 없음");
       return;
     }
 
@@ -20,7 +20,7 @@ export default function TableOfContents() {
     const tocElement = document.querySelector(".top-toc");
 
     if (tocElement) {
-      console.log("✅ top-toc 요소를 찾음, notion-page-content 내부로 이동");
+      console.log("✅ top-toc 요소를 찾음, notion-page 내부로 이동");
       targetParent.prepend(tocElement); // ✅ 부모 요소 안으로 이동
     } else {
       console.log("⚠️ top-toc 요소를 찾을 수 없음");
@@ -28,7 +28,7 @@ export default function TableOfContents() {
 
     // ✅ 목차 자동 업데이트 함수
     const updateHeadings = () => {
-      const notionContent = document.querySelector(".notion-content");
+      const notionContent = document.querySelector(".notion-page");
 
       if (!notionContent) {
         console.log("⚠️ Notion 콘텐츠를 찾을 수 없음");

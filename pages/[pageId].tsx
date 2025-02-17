@@ -50,15 +50,14 @@ export async function getStaticPaths() {
 }
 
 export default function NotionDomainDynamicPage(props) {
-  console.log("📌 NotionDomainDynamicPage 렌더링됨"); // ✅ 추가
-
   return (
     <>
-      <TableOfContents /> {/* ✅ 실제로 여기에 포함되어 있는지 확인 */}
+      <TableOfContents /> {/* ✅ 그대로 두기 (자동 이동됨) */}
       <NotionPage {...props} />
     </>
   );
 }
+
 
 
 
