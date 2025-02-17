@@ -61,9 +61,21 @@
 }
 
 .notion-gallery-grid {
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: 6vmin;
   gap: 6vmin;
+}
+
+@media (max-width: 1024px) {
+  .notion-gallery-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .notion-gallery-grid {
+    grid-template-columns: repeat(1,1fr);
+  }
 }
 
 .notion-gallery-grid .notion-page-icon-inline {
@@ -71,7 +83,7 @@
 }
 
 .notion-gallery-grid .notion-page-title-text {
-  font-size: 2em;
+  font-size: 1.5em;
   white-space: unset;
 }
 
@@ -156,14 +168,19 @@
   }
 }
 
+.notion-page.notion-page-has-cover.notion-page-has-icon.notion-page-has-text-icon {
+  margin: auto;
+  text-align: left;
+}
+
 @media only screen and (max-width: 720px) {
   .notion-page {
-    padding-left: 2vw;
-    padding-right: 2vw;
+    padding-left: 32px;
+    padding-right: 32px;
   }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 480px) {
   .notion-search-button {
     display: none !important;
   }
@@ -217,7 +234,7 @@
   .notion-page-cover-wrapper,
   .notion-page-cover-wrapper span,
   .notion-page-cover-wrapper img {
-    border-radius: 0;
+    border-radius: 24px;
   }
 }
 
@@ -458,6 +475,22 @@
   z-index: 100 !important; /* 다른 요소 위에 표시 */
 }
 
+/* 1024px 이상에서는 표시 */
+@media (min-width: 1024px) {
+  .notion-page-content-has-aside .notion-aside {
+      display: flex !important; /* 💡 나타나도록 강제 */
+  }
+}
+
+/* 1024px 미만에서는 숨김 */
+@media (max-width: 1023px) {
+  .notion-page-content-has-aside .notion-aside {
+      display: none !important; /* 💡 강제로 숨김 */
+  }
+}
+
+
+
 .notion,
 .notion-frame,
 .notion-page-scroller, 
@@ -465,7 +498,6 @@
 .notion-page-content notion-page-content-has-aside notion-page-content-has-toc {
   position: relative !important; /* 🚀 sticky 위치 보장 */
   overflow: visible !important; /* 🚀 sticky가 정상적으로 작동하도록 */
-  display: block !important; /* 🚀 flex를 block으로 변경하여 sticky 정상 작동 */
 }
 
 /* 🔹 목차 내부 스타일 */
