@@ -26,7 +26,8 @@
 }
 
 .notion-text {
-  padding: 0.5em 2px;
+  padding: 0.2em 2px;
+  line-height: 1.5;
 }
 
 .notion-asset-caption {

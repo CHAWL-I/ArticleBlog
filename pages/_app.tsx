@@ -19,6 +19,14 @@ import { useRouter } from 'next/router'
 import posthog from 'posthog-js'
 import * as React from 'react'
 
+// ✅ Pretendard 폰트 추가
+import localFont from 'next/font/local'
+const pretendard = localFont({
+  src: '../public/fonts/PretendardGOVVariable.woff2',
+  display: 'swap',
+  variable: '--font-pretendard'
+})
+
 import { bootstrap } from '@/lib/bootstrap-client'
 import {
   fathomConfig,
@@ -61,5 +69,10 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }, [router.events])
 
-  return <Component {...pageProps} />
+  return (
+    <main className={pretendard.className}>
+      <Component {...pageProps} />
+    </main>
+  )
 }
+

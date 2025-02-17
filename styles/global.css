@@ -13,13 +13,34 @@ html {
   margin: 0;
 }
 
-body {
-  --notion-font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', 'Noto Sans', sans-serif;
-  font-family: var(--notion-font);
+/* 기본 폰트 Pretendard 적용 */
+html, body {
+  font-family: 'PretendardGOVVariable', PretendardGOV, -apple-system, BlinkMacSystemFont, 
+    system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Apple SD Gothic Neo', 
+    'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
   overflow-x: hidden;
 }
+
+/* Notion 블록 내부 폰트도 Pretendard로 변경 */
+.notion, 
+.notion-text, 
+.notion-title, 
+.notion-header, 
+.notion-subheader, 
+.notion-table, 
+.notion-list, 
+.notion-callout, 
+.notion-quote, 
+.notion-page-link, 
+.notion-equation {
+  font-family: 'PretendardGOVVariable', PretendardGOV, -apple-system, BlinkMacSystemFont, 
+    system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Apple SD Gothic Neo', 
+    'Noto Sans KR', 'Malgun Gothic', sans-serif !important;
+
+}
+
 
 .static-tweet blockquote {
   margin: 0;
