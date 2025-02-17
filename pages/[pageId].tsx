@@ -5,6 +5,7 @@ import { domain, isDev } from '@/lib/config'
 import { getSiteMap } from '@/lib/get-site-map'
 import { resolveNotionPage } from '@/lib/resolve-notion-page'
 import { type PageProps, type Params } from '@/lib/types'
+import TableOfContents from "@/components/TableOfContents"; // ✅ TOC 컴포넌트 가져오기
 
 export const getStaticProps: GetStaticProps<PageProps, Params> = async (
   context
@@ -49,5 +50,15 @@ export async function getStaticPaths() {
 }
 
 export default function NotionDomainDynamicPage(props) {
-  return <NotionPage {...props} />
+  console.log("📌 NotionDomainDynamicPage 렌더링됨"); // ✅ 추가
+
+  return (
+    <>
+      <TableOfContents /> {/* ✅ 실제로 여기에 포함되어 있는지 확인 */}
+      <NotionPage {...props} />
+    </>
+  );
 }
+
+
+
