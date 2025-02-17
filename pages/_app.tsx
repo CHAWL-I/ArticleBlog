@@ -19,12 +19,18 @@ import { useRouter } from 'next/router'
 import posthog from 'posthog-js'
 import * as React from 'react'
 
-// ✅ Pretendard 폰트 추가
 import localFont from 'next/font/local'
+// ✅ Pretendard 폰트 추가
 const pretendard = localFont({
   src: '../public/fonts/PretendardGOVVariable.woff2',
   display: 'swap',
-  variable: '--font-pretendard'
+  variable: '--font-primary'
+})
+// ✅ WantedSans 폰트 추가
+const wanted = localFont({
+  src: '../public/fonts/WantedSansVariable.woff2',
+  display: 'swap',
+  variable: '--font-wanted'
 })
 
 import { bootstrap } from '@/lib/bootstrap-client'
@@ -70,7 +76,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.events])
 
   return (
-    <main className={pretendard.className}>
+    <main className={`${pretendard.variable} ${wanted.variable}`}>
       <Component {...pageProps} />
     </main>
   )

@@ -1,3 +1,4 @@
+/* 🔹 전체 요소 기본 설정 */
 * {
   box-sizing: border-box;
 }
@@ -13,35 +14,27 @@ html {
   margin: 0;
 }
 
-/* 기본 폰트 Pretendard 적용 */
+/* 🔹 전역 폰트 변수 설정 */
+:root {
+  --font-primary: 'WantedSansVariable', WantedSansVariable, -apple-system, BlinkMacSystemFont, 
+    system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Apple SD Gothic Neo', sans-serif;
+}
+
+/* 🔹 기본 폰트 적용 */
 html, body {
-  font-family: 'PretendardGOVVariable', PretendardGOV, -apple-system, BlinkMacSystemFont, 
-    system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Apple SD Gothic Neo', 
-    'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  font-family: var(--font-primary) !important;
   letter-spacing: -0.02em;
   line-height: 1.5;
   overflow-x: hidden;
 }
 
-/* Notion 블록 내부 폰트도 Pretendard로 변경 */
+/* 🔹 Notion 블록 내부 폰트도 강제 적용 */
 .notion, 
-.notion-text, 
-.notion-title, 
-.notion-header, 
-.notion-subheader, 
-.notion-table, 
-.notion-list, 
-.notion-callout, 
-.notion-quote, 
-.notion-page-link, 
-.notion-equation {
-  font-family: 'PretendardGOVVariable', PretendardGOV, -apple-system, BlinkMacSystemFont, 
-    system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Apple SD Gothic Neo', 
-    'Noto Sans KR', 'Malgun Gothic', sans-serif !important;
-
+.notion * {
+  font-family: var(--font-primary) !important;
 }
 
-
+/* 🔹 트윗 블록 스타일 */
 .static-tweet blockquote {
   margin: 0;
   margin-block-start: 0;
@@ -55,29 +48,25 @@ html, body {
   width: 1.2em !important;
 }
 
+/* 🔹 검색 입력 필드 */
 .searchInput {
   color: var(--fg-color);
   caret-color: var(--fg-color);
 }
 
-::-webkit-scrollbar
-{
+/* 🔹 스크롤바 스타일 */
+::-webkit-scrollbar {
   width: 5px;
   height: 5px;
-  background-color: #F5F5F5;
   background-color: var(--bg-color-1);
 }
 
-::-webkit-scrollbar-thumb
-{
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-  background-color: #555;
+::-webkit-scrollbar-thumb {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
   background-color: var(--fg-color-1);
 }
 
 ::-webkit-scrollbar-track {           
-    background-color: var(--bg-color);
+  background-color: var(--bg-color);
 }

@@ -10,7 +10,13 @@
 .notion {
   --notion-max-width: 720px;
   --notion-header-height: 54px;
+  font-family: var(--font-primary) !important;
 }
+/* 🔹 Notion 기본 블록 폰트 적용 */
+.notion * {
+  font-family: var(--font-primary) !important;
+}
+
 
 .notion-frame {
   padding: 0;
@@ -131,6 +137,7 @@
 .notion-h1,
 .notion-h2,
 .notion-h3 {
+  font-weight: 800;
   margin-bottom: 0.25em;
 }
 
