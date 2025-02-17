@@ -25,7 +25,8 @@ html, body {
   font-family: var(--font-primary) !important;
   letter-spacing: -0.02em;
   line-height: 1.5;
-  overflow-x: hidden;
+  font-weight: 300;
+  overflow-x: visible;
 }
 
 /* 🔹 Notion 블록 내부 폰트도 강제 적용 */
@@ -56,8 +57,8 @@ html, body {
 
 /* 🔹 스크롤바 스타일 */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 16px;
+  height: 24px;
   background-color: var(--bg-color-1);
 }
 

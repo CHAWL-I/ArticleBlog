@@ -137,7 +137,7 @@
 .notion-h1,
 .notion-h2,
 .notion-h3 {
-  font-weight: 800;
+  font-weight: 600;
   margin-bottom: 0.25em;
 }
 
@@ -175,6 +175,7 @@
 }
 
 .notion-title {
+  
   display: block;
   text-align: center;
 }
@@ -252,6 +253,10 @@
 
   transition-property: background-position, background-size;
   transition-duration: 300ms;
+}
+
+.notion b {
+  font-weight: 600;
 }
 
 .notion-red_background,
@@ -438,3 +443,44 @@
   content: "■" !important; /* 네모 */
 }
 
+/* 🔹 목차(TOC) 전체 컨테이너 스타일 */
+.notion-aside {
+  position: sticky; /* 스크롤을 따라오도록 설정 */
+  top: 100px !important; /* 헤더 아래에서 시작 */
+  right: 0;
+  max-height: calc(100vh - 120px); /* 뷰포트 높이에서 적당한 margin 빼기 */
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 15px;
+  z-index: 100 !important; /* 다른 요소 위에 표시 */
+}
+
+.notion,
+.notion-frame,
+.notion-page-scroller, 
+.notion-page notion-page-no-cover notion-page-has-icon notion-page-has-image-icon notion-full-page,
+.notion-page-content notion-page-content-has-aside notion-page-content-has-toc {
+  position: relative !important; /* 🚀 sticky 위치 보장 */
+  overflow: visible !important; /* 🚀 sticky가 정상적으로 작동하도록 */
+  display: block !important; /* 🚀 flex를 block으로 변경하여 sticky 정상 작동 */
+}
+
+/* 🔹 목차 내부 스타일 */
+.notion-aside-table {
+  padding: 10px;
+}
+
+/* 🔹 목차 리스트 스타일 */
+.notion-table-of-contents {
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+.notion-table-of-contents a {
+  display: block;
+  padding: 5px 10px;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
