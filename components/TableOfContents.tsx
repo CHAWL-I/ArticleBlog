@@ -5,7 +5,7 @@ export default function TableOfContents() {
 
   const [headings, setHeadings] = useState<{ id: string; text: string; level: number; fullPath: string }[]>([]);
   const [activeIndex, setActiveIndex] = useState<number>(-1); // ✅ -1은 "목차 없음" 상태
-  const [previousScrollY, setPreviousScrollY] = useState<number>(0);
+  const [previousScrollY] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true); // ✅ top-toc 표시 여부
 
 
@@ -51,25 +51,27 @@ export default function TableOfContents() {
             let hierarchy: { id: string; text: string; level: number }[] = [];
 
             const newHeadings = headingElements
-              .map((heading) => {
-                let id = heading.id || heading.getAttribute("data-id"); // ✅ `id`가 없으면 `data-id` 사용
-                let titleElement = heading.querySelector(".notion-h-title"); // ✅ notion-h-title 내부 텍스트 가져오기
-                let text = titleElement ? titleElement.textContent?.trim() : "제목 없음"; // ✅ `notion-h-title` 내부에서 텍스트 추출
-                let level = parseInt(heading.tagName.replace("H", ""), 10) || 1; // ✅ Heading Level (H1, H2, H3 등)
+  .map((heading) => {
+    const headingElement = heading as HTMLElement; // ✅ HTMLElement로 변환
+    const id = headingElement.id || headingElement.dataset.id; // ✅ `id`가 없으면 `data-id` 사용
+    const titleElement = headingElement.querySelector(".notion-h-title"); // ✅ `notion-h-title` 내부 텍스트 가져오기
+    const text = titleElement ? titleElement.textContent?.trim() : "제목 없음"; // ✅ `notion-h-title` 내부에서 텍스트 추출
+    const level = Number.parseInt(headingElement.tagName.replace("H", ""), 10) || 1; // ✅ Heading Level (H1, H2, H3 등)
 
-                if (!id) return null;
+    if (!id) return null;
 
-                // ✅ 부모-자식 관계 기반으로 전체 경로 생성
-                hierarchy = hierarchy.filter((h) => h.level < level); // 상위 계층 정리
-                hierarchy.push({ id, text, level });
+    // ✅ 부모-자식 관계 기반으로 전체 경로 생성
+    hierarchy = hierarchy.filter((h) => h.level < level); // 상위 계층 정리
+    hierarchy.push({ id, text, level });
 
-                let fullPath = hierarchy.map((h) => h.text).join(" / "); // "h1 / h2 / h3" 형태로 변환
+    const fullPath = hierarchy.map((h) => h.text).join(" / "); // "h1 / h2 / h3" 형태로 변환
 
-                return { id, text, level, fullPath };
-              })
-              .filter(Boolean) as { id: string; text: string; level: number; fullPath: string }[];
+    return { id, text, level, fullPath };
+  })
+  .filter(Boolean) as { id: string; text: string; level: number; fullPath: string }[];
 
-            console.log("📌 업데이트된 headings:", newHeadings);
+console.log("📌 업데이트된 headings:", newHeadings);
+
 
             setHeadings(newHeadings);
           } else {
@@ -113,8 +115,8 @@ export default function TableOfContents() {
     if (!tocElement) return;
 
     const checkIntersection = () => {
-      const tocBottom = tocElement.getBoundingClientRect().bottom; // ✅ top-toc의 위치 가져오기
-      const sections = document.querySelectorAll(".notion-h, .notion-h1, .notion-h2, .notion-h3, .notion-h4");
+      //const tocBottom = tocElement.getBoundingClientRect().bottom; // ✅ top-toc의 위치 가져오기
+      //const sections = document.querySelectorAll(".notion-h, .notion-h1, .notion-h2, .notion-h3, .notion-h4");
 
       if (ticking) return;
       ticking = true;
@@ -123,7 +125,7 @@ export default function TableOfContents() {
         const tocElement = document.querySelector(".top-toc");
         if (!tocElement) return;
 
-        const tocBottom = tocElement.getBoundingClientRect().top;
+        //const tocBottom = tocElement.getBoundingClientRect().top;
         const tocTop = tocElement.getBoundingClientRect().bottom;
         const sections = document.querySelectorAll(".notion-h, .notion-h1, .notion-h2, .notion-h3, .notion-h4");
 
@@ -136,21 +138,20 @@ export default function TableOfContents() {
         let closestSectionIndex = -1;
         let minDistance = Infinity;
         
-        for (let index = 0; index < sections.length; index++) {
-            const section = sections[index];
+        for (const [index, section] of Array.from(sections).entries()) {
             const sectionBottom = section.getBoundingClientRect().bottom;
             const distance = Math.abs(sectionBottom - tocTop);
-  
+          
             console.log(`🔹 섹션 ${index}: bottom=${sectionBottom}, distance=${distance}`);
-  
-        // ✅ `top-toc`보다 위에 있는 섹션만 고려
-        if (sectionBottom < tocTop && distance < minDistance) {
-            closestSectionIndex = index;
-            minDistance = distance;
+          
+            // ✅ `top-toc`보다 위에 있는 섹션만 고려
+            if (sectionBottom < tocTop && distance < minDistance) {
+              closestSectionIndex = index;
+              minDistance = distance;
+            }
           }
-        }
   
-        let newActiveIndex = closestSectionIndex !== -1 ? closestSectionIndex : -1;
+        const newActiveIndex = closestSectionIndex !== -1 ? closestSectionIndex : -1;
 
         console.log("🎯 최종 감지된 인덱스:", newActiveIndex);
 
