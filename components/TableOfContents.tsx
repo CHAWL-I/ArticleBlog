@@ -8,23 +8,26 @@ export default function TableOfContents() {
   useEffect(() => {
     console.log("⏳ useEffect 실행됨");
 
-    // ✅ 목차를 이동할 부모 요소 찾기
-    const targetParent = document.querySelector(".notion-page");
+    const moveTOCToContent = () => {
+      const targetParent = document.querySelector(".notion-page");
+      const tocElement = document.querySelector(".top-toc");
 
-    if (!targetParent) {
-      console.log("⚠️ notion-page 요소를 찾을 수 없음");
-      return;
-    }
+      // ✅ 이미 이동한 경우 반복 실행하지 않도록 방지
+      if (targetParent && tocElement && tocElement.parentElement !== targetParent) {
+        console.log("✅ top-toc 요소를 찾음, notion-page 내부로 이동");
+        targetParent.prepend(tocElement);
+        return true; // ✅ 이동 성공
+      }
+      return false; // ✅ 이동 실패
+    };
 
-    // ✅ 기존 top-toc 요소 찾기
-    const tocElement = document.querySelector(".top-toc");
-
-    if (tocElement) {
-      console.log("✅ top-toc 요소를 찾음, notion-page 내부로 이동");
-      targetParent.prepend(tocElement); // ✅ 부모 요소 안으로 이동
-    } else {
-      console.log("⚠️ top-toc 요소를 찾을 수 없음");
-    }
+    // ✅ `notion-page`가 생성될 때까지 확인, 이미 이동했으면 종료
+    const interval = setInterval(() => {
+      console.log("🔄 notion-page가 렌더링될 때까지 대기 중...");
+      if (moveTOCToContent()) {
+        clearInterval(interval); // ✅ 이동이 완료되면 `setInterval` 종료
+      }
+    }, 500); // 0.5초 간격으로 확인
 
     // ✅ 목차 자동 업데이트 함수
     const updateHeadings = () => {
@@ -55,14 +58,22 @@ export default function TableOfContents() {
     const observer = new MutationObserver(() => {
       console.log("🔄 DOM 변경 감지됨! (목차 업데이트)");
       updateHeadings();
+      moveTOCToContent(); // ✅ `notion-page`가 변경될 때도 다시 이동
     });
 
-    observer.observe(targetParent, { childList: true, subtree: true });
+    const targetParent = document.querySelector(".notion-page");
+    if (targetParent) {
+      observer.observe(targetParent, { childList: true, subtree: true });
+    }
 
     // ✅ 최초 실행
     updateHeadings();
+    moveTOCToContent();
 
-    return () => observer.disconnect(); // ✅ Cleanup
+    return () => {
+      observer.disconnect(); // ✅ Cleanup
+      clearInterval(interval);
+    };
   }, []);
 
   return (
