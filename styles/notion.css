@@ -45,29 +45,52 @@
   flex-direction: column;
 }
 
-/* ✅ notion-asset-wrapper-video 크기 조정 */
-.notion-asset-wrapper-video {
-  width: 100%; /* ✅ 부모 요소 크기 제한 방지 */
-  max-width: 720px; /* ✅ 최대 너비 설정 */
-  min-width: 360px; /*너무 좁아지는 것 방지*/
-  max-height: 360px;
-  aspect-ratio: 16 / 9;
-  display: flex;
-}
-
-.notion-asset-wrapper-video > div,
-.notion-asset-wrapper-video video {
-  width: 100%;
-  border-radius: 10px; /* ✅ 선택 사항: 둥근 모서리 */
+/* ✅ numbered list를 notion-page-content-inner에 맞게 설정 */
+.notion-page-content-inner .notion-list-numbered {
+  width: 100% !important; /* 부모 요소 너비에 맞춤 */
+  max-width: 100% !important;
   display: block;
-  object-fit: cover;
+  margin: 0 auto;
 }
 
-/* ✅ notion-asset-wrapper가 notion-page 내부에서 좌우 여백을 가짐 */
-.notion-page .notion-asset-wrapper {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--notion-indent, 0px); /* ✅ Notion의 들여쓰기 유지 */
+/* ✅ 리스트 아이템(li)도 부모 요소에 맞게 확장 */
+.notion-page-content-inner .notion-list-numbered li {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+}
+
+.notion-page-content-inner .notion-
+
+
+/* ✅ 영상이 부모인 `notion-page-content-inner`의 너비에 맞게 조정됨 */
+.notion-page-content-inner .notion-asset-wrapper-video {
+  width: 100% !important; /* 부모 요소의 너비를 가득 채움 */
+  max-width: 100% !important;
+  display: block; /* 부모의 flex 영향을 최소화 */
+  margin: 0 auto; /* 가운데 정렬 */
+  aspect-ratio: 16 / 9; /* 16:9 비율 유지 */
+  max-height: 360px; /* 최대 높이 제한 */
+}
+
+/* ✅ 내부 `video` 및 `iframe` 요소에 동일한 스타일 적용 */
+.notion-page-content-inner .notion-asset-wrapper-video video,
+.notion-page-content-inner .notion-asset-wrapper-video iframe {
+  width: 100% !important;
+  height: auto !important; /* 세로 높이 최대 360px 유지 */
+  max-height: 360px !important;
+  object-fit: cover;
+  display: block;
+}
+
+.notion-page-content-inner firue.notion-asset-wrapper-video {
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  max-width: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .notion-header {
@@ -462,7 +485,6 @@
 
 /*노션 리스트 전체*/
 .notion-list li {
-  list-style-type: none;
   position: relative;
 }
 
@@ -470,17 +492,20 @@
   list-style-type: none !important;
   padding-inline-start: 1em;
   padding-left: 16px;
+}
+
+.notion-list-numbered:not(.nested) {
   counter-reset: list-counter;
 }
 
 /* ✅ 리스트 아이템(각 li 요소)에 숫자 넘버링 적용 */
-.notion-list-numbered li {
+.notion-list-numbered > li {
   position: relative;
   counter-increment: list-counter; /* ✅ 숫자 증가 */
   padding-left: 16px;
 }
 
-.notion-list-numbered li::before {
+.notion-list-numbered > li::before {
   content: counter(list-counter) "."; /* ✅ start 값 사용하여 넘버링 적용 */
   position: absolute;
   left: -8px;
@@ -488,6 +513,20 @@
   font-size: 1em;
   color: #333;
 }
+
+/* ✅ 중첩 리스트(`ol > ol`)에도 적용 */
+.notion-list-numbered > ol {
+  counter-reset: sub-counter; /* 중첩 리스트 초기화 */
+}
+
+.notion-list-numbered > ol > li {
+  counter-increment: sub-counter;
+}
+
+.notion-list-numbered > ol > li::before {
+  content: counter(sub-counter) "."; /* 중첩 리스트 넘버링 */
+}
+
 
 .notion-list-disc {
   list-style-type: none;
