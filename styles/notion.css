@@ -146,6 +146,7 @@
   padding: 16px;
   margin: 0 auto;
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .notion-nav-header-rhs {
@@ -284,7 +285,7 @@
 }
 
 .notion-title {
-  
+  font-size: 2em;
   display: block;
   text-align: center;
 }
@@ -655,22 +656,23 @@
   left: 0;
   width: 100%;
   height: calc(2 * var(--notion-header-height)); /* 헤더 높이의 2배 */
-  background: rgba(255, 255, 255, 255); /* 반투명 배경 */
+  background: var(--bg-color); /* 반투명 배경 */
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
   z-index: 800; /* ✅ 헤더보다 낮은 z-index (헤더가 위에 오도록) */
 
   /* ✅ 텍스트를 아래쪽으로 정렬 */
   align-content: flex-end;
-  font-size: 2em;
+  padding-bottom: 16px;
 }
 
 
 .top-toc a {
   margin: 0 15px;
   font-weight: bold;
+  font-style: italic;
   text-decoration: none;
-  color: #333;
-  font-size: 22px;
+  color: var(--text-color);
+  font-size: 16px;
   transition: color 0.2s ease-in-out;
   white-space: nowrap; /* ✅ 한 줄로 유지 */
   text-overflow: ellipsis; /* ✅ 줄임표(...) 표시 */
@@ -715,6 +717,10 @@
 }
 
 /* 🔹 목차 내부 스타일 */
+.notion-aside {
+  background-color: var(--bg-color);
+}
+
 .notion-aside-table {
   padding: 10px;
 }
@@ -728,7 +734,7 @@
 .notion-table-of-contents a {
   display: block;
   padding: 5px 10px;
-  color: #333;
+  color: var(--text-color);
   text-decoration: none;
   transition: all 0.2s ease-in-out;
 }
