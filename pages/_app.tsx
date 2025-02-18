@@ -67,9 +67,19 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }, [router.events])
 
+  React.useEffect(() => {
+    if (typeof window === "undefined") return; // ✅ 서버 환경에서 실행 방지
+
+    // ✅ `start` 속성이 있는 리스트(`ol[start]`)에 `counter-reset` 적용
+    document.querySelectorAll(".notion-list-numbered[start]").forEach((ol) => {
+      const startValue = ol.getAttribute("start") ? parseInt(ol.getAttribute("start") || "1", 10) : 1;
+      ol.setAttribute("style", `counter-reset: list-counter ${startValue - 1}`);
+    });
+  }, []); // ✅ 페이지 최초 로드시 실행
+
   return (
-    <main className={`${pretendard.variable} ${wanted.variable}`}>
+    <main>
       <Component {...pageProps} />
     </main>
-  )
+  );
 }

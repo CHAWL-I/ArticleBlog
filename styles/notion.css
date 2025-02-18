@@ -41,13 +41,33 @@
 }
 
 .notion-asset-wrapper {
-  margin-top: 1em;
-  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ notion-asset-wrapper-video 크기 조정 */
+.notion-asset-wrapper-video {
+  width: 100%; /* ✅ 부모 요소 크기 제한 방지 */
+  max-width: 720px; /* ✅ 최대 너비 설정 */
+  min-width: 360px; /*너무 좁아지는 것 방지*/
+  max-height: 360px;
+  aspect-ratio: 16 / 9;
+  display: flex;
 }
 
 .notion-asset-wrapper-video > div,
 .notion-asset-wrapper-video video {
-  width: 100% !important;
+  width: 100%;
+  border-radius: 10px; /* ✅ 선택 사항: 둥근 모서리 */
+  display: block;
+  object-fit: cover;
+}
+
+/* ✅ notion-asset-wrapper가 notion-page 내부에서 좌우 여백을 가짐 */
+.notion-page .notion-asset-wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--notion-indent, 0px); /* ✅ Notion의 들여쓰기 유지 */
 }
 
 .notion-header {
@@ -440,29 +460,58 @@
   align-items: center;
 }
 
-/* 1단계: ● (채워진 동그라미) */
+/*노션 리스트 전체*/
 .notion-list li {
   list-style-type: none;
   position: relative;
-  padding-left: 20px;
 }
 
-.notion-list li::before {
-  content: "●"; /* 채워진 동그라미 */
+.notion-list-numbered {
+  list-style-type: none !important;
+  padding-inline-start: 1em;
+  padding-left: 16px;
+  counter-reset: list-counter;
+}
+
+/* ✅ 리스트 아이템(각 li 요소)에 숫자 넘버링 적용 */
+.notion-list-numbered li {
   position: relative;
-  left: -12px;
-  top: -2px;
-  font-size: 0.4em;
+  counter-increment: list-counter; /* ✅ 숫자 증가 */
+  padding-left: 16px;
+}
+
+.notion-list-numbered li::before {
+  content: counter(list-counter) "."; /* ✅ start 값 사용하여 넘버링 적용 */
+  position: absolute;
+  left: -8px;
+  top: 6px;
+  font-size: 1em;
   color: #333;
 }
 
+.notion-list-disc {
+  padding-inline-start: 1em;
+}
+
+/* 1단계: ● (채워진 동그라미) */
+.notion-list-disc li::before {
+  content: "●"; /* 채워진 동그라미 */
+  position: relative;
+  left: -16px;
+  top: -3px;
+  font-size: 0.5em;
+  color: #333;
+  padding-left: 8px;
+}
+
 /* 2단계: ○ (빈 동그라미) */
-.notion-list li li::before {
+.notion-list-disc li li::before {
   content: "○" !important;/* 빈 동그라미 */
+  left: -16px;
 }
 
 /* 3단계: ■ (네모) */
-.notion-list li li li::before {
+.notion-list-disc li li li::before {
   content: "■" !important; /* 네모 */
 }
 
