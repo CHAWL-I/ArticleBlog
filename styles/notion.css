@@ -502,7 +502,7 @@
   content: "▶"; /* 채워진 동그라미 */
   position: absolute;
   left: -8px;
-  top: 6px;
+  top: 7px;
   font-size: .8em;
   color: #333;
   padding-left: 8px;
