@@ -490,29 +490,41 @@
 }
 
 .notion-list-disc {
-  padding-inline-start: 1em;
+  list-style-type: none;
 }
 
-/* 1단계: ● (채워진 동그라미) */
-.notion-list-disc li::before {
-  content: "●"; /* 채워진 동그라미 */
+.notion-list-disc li {
   position: relative;
-  left: -16px;
-  top: -3px;
-  font-size: 0.5em;
+  padding-left: 24px;
+}
+/* 1단계: ● (채워진 동그라미) */
+.notion-list-disc > li::before {
+  content: "▶"; /* 채워진 동그라미 */
+  position: absolute;
+  left: -8px;
+  top: 6px;
+  font-size: .8em;
   color: #333;
   padding-left: 8px;
 }
 
 /* 2단계: ○ (빈 동그라미) */
-.notion-list-disc li li::before {
-  content: "○" !important;/* 빈 동그라미 */
-  left: -16px;
+.notion-list-disc > ul > li::before {
+  content: "▶"; /* 채워진 연한 동그라미 */
+  position: absolute;
+  color: #cbcbcb;
 }
 
 /* 3단계: ■ (네모) */
-.notion-list-disc li li li::before {
-  content: "■" !important; /* 네모 */
+.notion-list-disc > ul > ul > li::before {
+  content: "▷" !important; /* 빈 동그라미 */
+  position: absolute;
+  color: #333;
+}
+
+/* ✅ 리스트 안에 `div.notion-text`가 있을 경우에도 적용 */
+.notion-list-disc li > div.notion-text {
+  display: inline-block;
 }
 
 /* 🔹 목차(TOC) 전체 컨테이너 스타일 */
