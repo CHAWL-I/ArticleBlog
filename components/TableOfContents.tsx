@@ -15,7 +15,7 @@ export default function TableOfContents() {
     console.log("⏳ useEffect 실행됨");
 
     const moveTOCToContent = () => {
-      const targetParent = document.querySelector(".notion-page-content");
+      const targetParent = document.querySelector(".notion-page-scroller");
       const tocElement = document.querySelector(".top-toc");
 
       if (targetParent && tocElement && tocElement.parentElement !== targetParent) {
@@ -179,12 +179,26 @@ console.log("📌 업데이트된 headings:", newHeadings);
   }, [headings, activeIndex, previousScrollY]);
 
   return (
-    <nav className="top-toc" style={{ display: isVisible ? "block" : "none" }}>
+    <nav
+      className="top-toc"
+      style={{
+        display: isVisible ? "block" : "none",
+        visibility: isVisible ? "visible" : "hidden",
+        opacity: isVisible ? 1 : 0,
+        pointerEvents: isVisible ? "auto" : "none",
+        transition: "opacity 0.25s ease-in-out", // ✅ 부드러운 페이드 효과
+      }}
+    >
       {headings.length > 0 && activeIndex !== -1 ? (
-        <a key={headings[activeIndex]?.id} href={`#${headings[activeIndex]?.id}`} className="toc-link active">
+        <a
+          key={headings[activeIndex]?.id}
+          href={`#${headings[activeIndex]?.id}`}
+          className="toc-link active"
+        >
           {headings[activeIndex]?.fullPath} {/* ✅ 하나의 항목만 표시 */}
         </a>
       ) : null}
     </nav>
-  );
+  );  
+  
 }
