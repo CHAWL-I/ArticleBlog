@@ -10,7 +10,7 @@ import 'prismjs/themes/prism-okaidia.css'
 import type { AppProps } from 'next/app'
 import * as Fathom from 'fathom-client'
 // ✅ 폰트 로컬 임포트
-import localFont from 'next/font/local'
+//import localFont from 'next/font/local'
 import { useRouter } from 'next/router'
 import posthog from 'posthog-js'
 import * as React from 'react'
@@ -24,7 +24,7 @@ import {
   posthogId
 } from '@/lib/config'
 
-const pretendard = localFont({
+/* const pretendard = localFont({
   src: '../public/fonts/PretendardGOVVariable.woff2',
   display: 'swap',
   variable: '--font-primary'
@@ -33,7 +33,7 @@ const wanted = localFont({
   src: '../public/fonts/WantedSansVariable.woff2',
   display: 'swap',
   variable: '--font-wanted'
-}) // 다크 모드용 (필요하면 활성화)
+}) */ // 다크 모드용 (필요하면 활성화)
 
 if (!isServer) {
   bootstrap()
@@ -71,10 +71,10 @@ export default function App({ Component, pageProps }: AppProps) {
     if (typeof window === "undefined") return; // ✅ 서버 환경에서 실행 방지
 
     // ✅ `start` 속성이 있는 리스트(`ol[start]`)에 `counter-reset` 적용
-    document.querySelectorAll(".notion-list-numbered[start]").forEach((ol) => {
-      const startValue = ol.getAttribute("start") ? parseInt(ol.getAttribute("start") || "1", 10) : 1;
+    for (const ol of document.querySelectorAll(".notion-list-numbered[start]")) {
+      const startValue = ol.getAttribute("start") ? Number.parseInt(ol.getAttribute("start") || "1", 10) : 1;
       ol.setAttribute("style", `counter-reset: list-counter ${startValue - 1}`);
-    });
+    }
   }, []); // ✅ 페이지 최초 로드시 실행
 
   return (
