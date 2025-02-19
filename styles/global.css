@@ -23,7 +23,8 @@ html {
 /* 🔹 기본 폰트 적용 */
 html, body {
   font-family: var(--font-primary) !important;
-  letter-spacing: -0.02em;
+  font-size: 1.14rem;
+  letter-spacing: -0.04em;
   line-height: 1.5;
   font-weight: 300;
   overflow-x: visible;
@@ -33,6 +34,28 @@ html, body {
 .notion, 
 .notion * {
   font-family: var(--font-primary) !important;
+}
+
+.notion-list li {
+  display: block;
+  padding: 0px;
+    margin: 0 0 1em 0; /* 아래쪽에 간격 추가 */
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+}
+
+.notion-h {
+  display: block;
+  padding: 0px;
+    margin-block-start: 1.33em;
+    margin-block-end: 1.33em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
 }
 
 /* 🔹 트윗 블록 스타일 */

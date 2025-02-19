@@ -1,4 +1,3 @@
-// ✅ 스타일 관련 import (CSS 관련 파일은 가장 마지막에 배치)
 import 'katex/dist/katex.min.css' // 수식 렌더링
 import 'prismjs/themes/prism-coy.css' // 코드 하이라이팅
 import 'react-notion-x/src/styles.css' // Notion 스타일
@@ -8,12 +7,14 @@ import 'styles/prism-theme.css' // Prism 테마
 import 'prismjs/themes/prism-okaidia.css'
 
 import type { AppProps } from 'next/app'
+import Link from 'next/link' // ✅ Next.js 페이지 이동을 위한 Link 추가
 import * as Fathom from 'fathom-client'
-// ✅ 폰트 로컬 임포트
-//import localFont from 'next/font/local'
 import { useRouter } from 'next/router'
 import posthog from 'posthog-js'
 import * as React from 'react'
+
+import { NotionPageHeader } from '@/components/NotionPageHeader'
+import { useNotionContext } from 'react-notion-x' // ✅ Notion 컨텍스트 불러오기
 
 import { bootstrap } from '@/lib/bootstrap-client'
 import {
@@ -24,23 +25,16 @@ import {
   posthogId
 } from '@/lib/config'
 
-/* const pretendard = localFont({
-  src: '../public/fonts/PretendardGOVVariable.woff2',
-  display: 'swap',
-  variable: '--font-primary'
-})
-const wanted = localFont({
-  src: '../public/fonts/WantedSansVariable.woff2',
-  display: 'swap',
-  variable: '--font-wanted'
-}) */ // 다크 모드용 (필요하면 활성화)
-
 if (!isServer) {
   bootstrap()
 }
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
+  const { recordMap } = useNotionContext() // ✅ Notion 페이지 데이터 가져오기
+
+  console.log('🚀 _app.tsx 실행됨') // ✅ 실행되는지 확인
+  console.log('🔍 pageProps:', pageProps) // ✅ 전달되는 값 확인
 
   React.useEffect(() => {
     function onRouteChangeComplete() {
@@ -67,19 +61,28 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }, [router.events])
 
+  // ✅ 검색 버튼 보이게 설정
   React.useEffect(() => {
-    if (typeof window === "undefined") return; // ✅ 서버 환경에서 실행 방지
-
-    // ✅ `start` 속성이 있는 리스트(`ol[start]`)에 `counter-reset` 적용
-    for (const ol of document.querySelectorAll(".notion-list-numbered[start]")) {
-      const startValue = ol.getAttribute("start") ? Number.parseInt(ol.getAttribute("start") || "1", 10) : 1;
-      ol.setAttribute("style", `counter-reset: list-counter ${startValue - 1}`);
+    const searchButton = document.querySelector(".notion-search-button") as HTMLElement | null
+    if (searchButton) {
+      searchButton.style.display = "flex"
+      searchButton.style.visibility = "visible"
+      searchButton.style.opacity = "1"
     }
-  }, []); // ✅ 페이지 최초 로드시 실행
+  }, [])
+
+  // ✅ `recordMap.block`에서 `PageBlock` 또는 `CollectionViewPageBlock`만 가져오기
+  const block = recordMap?.block
+    ? Object.values(recordMap.block)
+        .map((b: any) => b.value)
+        .find((b) => b.type === 'page' || b.type === 'collection_view_page') // ✅ `page` 또는 `collection_view_page` 타입만 필터링
+    : null
 
   return (
-    <main>
-      <Component {...pageProps} />
-    </main>
-  );
+    <>
+      <main>
+        <Component {...pageProps} />
+      </main>
+    </>
+  )
 }
