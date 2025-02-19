@@ -94,6 +94,7 @@
 /* ✅ Cover가 없는 페이지에만 적용 */
 .notion-page.notion-page-no-cover.notion-full-page .notion-page-content {
   display: flex;
+  justify-content: center;
   align-items: center;
   max-width: 1200px;
   width: 100%;
@@ -255,11 +256,15 @@
   grid-template-columns: repeat(auto-fit, minmax(256px,1fr));
   max-width: 100%; /* ✅ notion-page-content-inner에 맞춤 */
   grid-gap: 6vmin;
-  gap: 6vmin;
+  gap: 3vmin;
   justify-content: center;
   align-items: start;
   padding-left: 4px;
   padding-right: 4px;
+}
+
+.notion-gallery-grid {
+  padding-top: 2.7rem;
 }
 
 .notion-gallery-grid .notion-page-icon-inline {
@@ -301,12 +306,13 @@
 
 .notion-collection-card-cover {
   border-radius: 16px;
-  box-shadow: 2px 2px 4px 4px rgba(15, 15, 15, 0.08);
+  box-shadow: 0px 0px 3px 3px rgba(15, 15, 15, 0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   width: 100%;
+  height: 200px !important;
   transition: all 0.3s ease-in-out;
 }
 

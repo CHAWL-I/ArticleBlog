@@ -1,6 +1,6 @@
 import type * as types from 'notion-types';
 import { useRouter } from 'next/router';
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, useNotionContext } from 'react-notion-x';
 
 import { isSearchEnabled } from '@/lib/config';
@@ -21,38 +21,41 @@ export function NotionPageHeader({
     { pageId: '19ff3422532d80b6b991e9459ddd4927', title: 'Blog', category: 'blog' }
   ];
 
+  const [currentCategories, setCurrentCategories] = useState<string[]>([]);
+
   // ✅ 현재 페이지의 카테고리 찾기
-const getPageCategories = () => {
-  const allBlocks = recordMap?.block || {};
-  const currentPageId = Object.keys(allBlocks)[0];
-  const currentBlock = allBlocks[currentPageId]?.value;
+  useEffect(() => {
+    const getPageCategories = () => {
+      const allBlocks = recordMap?.block || {};
+      const currentPageId = Object.keys(allBlocks)[0];
+      const currentBlock = allBlocks[currentPageId]?.value;
 
-  // 다중 선택 속성 추출 (Notion에서 다중 선택 필드는 'multi_select'로 표시됨)
-  const multiSelectProperty = currentBlock?.properties?.multi_select;
+      // 다중 선택 속성 추출 (Notion에서 다중 선택 필드는 'multi_select'로 표시됨)
+      const multiSelectProperty = currentBlock?.properties?.multi_select;
 
-  if (multiSelectProperty && Array.isArray(multiSelectProperty)) {
-    // 선택된 모든 카테고리를 배열로 반환
-    return multiSelectProperty.map(([value]: [string]) => value.toLowerCase());
-  }
+      if (multiSelectProperty && Array.isArray(multiSelectProperty)) {
+        return multiSelectProperty.map(([value]: [string]) => value.toLowerCase());
+      }
 
-  // ✅ 만약 위 방식으로 값이 안 나올 경우, DOM에서 직접 파싱
-  const multiSelectElements = document.querySelectorAll('.notion-property-multi_select-item');
-  if (multiSelectElements.length > 0) {
-    return Array.from(multiSelectElements).map((el) => el.textContent?.trim().toLowerCase() || '');
-  }
+      // ✅ 만약 위 방식으로 값이 안 나올 경우, DOM에서 직접 파싱
+      if (typeof document !== 'undefined') {
+        const multiSelectElements = document.querySelectorAll('.notion-property-multi_select-item');
+        if (multiSelectElements.length > 0) {
+          return Array.from(multiSelectElements).map((el) => el.textContent?.trim().toLowerCase() || '');
+        }
+      }
 
-  return [];
-};
+      return [];
+    };
 
-
-  const currentCategories = getPageCategories();
+    const categories = getPageCategories();
+    setCurrentCategories(categories);
+  }, [recordMap]);
 
   // ✅ 현재 페이지가 특정 pageId의 하위인지 확인
   const isDescendantOf = (parentPageId: string) => {
     const allBlocks = recordMap?.block || {};
-    return Object.values(allBlocks).some((block: any) => {
-      return block.value?.parent_id === parentPageId;
-    });
+    return Object.values(allBlocks).some((block: any) => block.value?.parent_id === parentPageId);
   };
 
   return (
