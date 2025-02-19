@@ -94,7 +94,7 @@
 /* ✅ Cover가 없는 페이지에만 적용 */
 .notion-page.notion-page-no-cover.notion-full-page .notion-page-content {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   max-width: 1100px;
   width: 100%;
@@ -771,8 +771,8 @@
   position: sticky; /* 스크롤을 따라오도록 설정 */
   top: 100px !important; /* 헤더 아래에서 시작 */
   right: 0;
-  width: 256px !important;
-  max-width: 256px;
+  width: 224px !important;
+  max-width: 224px;
   flex-shrink: 0; /* 사이드바 크기 고정 */
   padding: 0;
   max-height: calc(100vh - 120px); /* 뷰포트 높이에서 적당한 margin 빼기 */
@@ -859,12 +859,11 @@ nav.top-toc:empty {
 .notion-aside {
   position: sticky !important;
   background-color: var(--bg-color);
-  padding-top: 32px;
 }
 
 .notion-aside-table-of-contents {
-  width: 256px;
-  max-width: 256px;
+  width: 224px;
+  max-width: 224px;
 }
 
 .notion-aside-table-of-contents-header {
