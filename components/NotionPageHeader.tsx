@@ -67,8 +67,9 @@ export function NotionPageHeader({
             const pageBlock = recordMap?.block?.[link.pageId]?.value;
             const currentPath = router.asPath.split('?')[0];
 
+            // ✅ .some() → .includes()로 수정
             const isActive =
-              currentCategories.some(cat => cat === link.category.toLowerCase()) ||
+              currentCategories.includes(link.category.toLowerCase()) ||
               isDescendantOf(link.pageId) ||
               currentPath.includes(link.pageId);
 

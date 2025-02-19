@@ -12,8 +12,6 @@ import { useRouter } from 'next/router'
 import posthog from 'posthog-js'
 import * as React from 'react'
 
-import TagTab from '../components/TagTab';
-
 /* import { useNotionContext } from 'react-notion-x' // ✅ Notion 컨텍스트 불러오기 */
 import { bootstrap } from '@/lib/bootstrap-client'
 import {
@@ -23,6 +21,8 @@ import {
   posthogConfig,
   posthogId
 } from '@/lib/config'
+
+import TagTab from '../components/TagTab';
 
 if (!isServer) {
   bootstrap()

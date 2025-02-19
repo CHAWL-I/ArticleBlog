@@ -61,13 +61,13 @@ export default function TagTab() {
 
     // ✅ notion-collection 필터링
     const collections = document.querySelectorAll(".notion-collection");
-    collections.forEach((collection, idx) => {
+    for (const [idx, collection] of collections.entries()) {
       if (idx === index) {
         (collection as HTMLElement).style.display = "block"; // 선택된 컬렉션 표시
       } else {
         (collection as HTMLElement).style.display = "none"; // 나머지는 숨김
       }
-    });
+    }
   };
 
   // ✅ 조건을 충족하지 않으면 렌더링하지 않음
