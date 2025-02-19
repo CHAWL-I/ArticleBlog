@@ -13,32 +13,47 @@ export function NotionPageHeader({
   const { components, mapPageUrl, recordMap } = useNotionContext();
   const router = useRouter();
 
-  // ✅ 항상 표시할 특정 페이지 ID
+  // ✅ 항상 표시할 특정 페이지 ID 및 카테고리
   const fixedPages = [
-    { pageId: '19df3422532d8092a25ee9bbb2feae72', title: 'Home', path: '/' },
-    { pageId: '19ff3422532d8077b9a8c28bf15c1395', title: 'About me', path: '/about-me' },
-    { pageId: '19ff3422532d8046b758d593a45594a5', title: 'Portfolio', path: '/portfolio' },
-    { pageId: '19ff3422532d80b6b991e9459ddd4927', title: 'Blog', path: '/blog' }
+    { pageId: '19df3422532d8092a25ee9bbb2feae72', title: 'Home', category: 'home' },
+    { pageId: '19ff3422532d8077b9a8c28bf15c1395', title: 'About me', category: 'about me' },
+    { pageId: '19ff3422532d8046b758d593a45594a5', title: 'Portfolio', category: 'portfolio' },
+    { pageId: '19ff3422532d80b6b991e9459ddd4927', title: 'Blog', category: 'blog' }
   ];
 
-  // ✅ 현재 URL에서 상위 메뉴 찾기
-  const getActiveMenu = () => {
-    const currentPath = router.asPath.split('?')[0]; // 쿼리 스트링 제거
+  // ✅ 현재 페이지의 카테고리 찾기
+const getPageCategories = () => {
+  const allBlocks = recordMap?.block || {};
+  const currentPageId = Object.keys(allBlocks)[0];
+  const currentBlock = allBlocks[currentPageId]?.value;
 
-    const activeMenu = fixedPages.find((page) => {
-      if (page.path === '/') {
-        // Home은 정확히 '/'와만 매칭
-        return currentPath === '/';
-      } else {
-        // 나머지는 경로 포함 여부로 매칭
-        return currentPath.startsWith(page.path) || currentPath.includes(page.pageId);
-      }
+  // 다중 선택 속성 추출 (Notion에서 다중 선택 필드는 'multi_select'로 표시됨)
+  const multiSelectProperty = currentBlock?.properties?.['multi_select'];
+
+  if (multiSelectProperty && Array.isArray(multiSelectProperty)) {
+    // 선택된 모든 카테고리를 배열로 반환
+    return multiSelectProperty.map(([value]: [string]) => value.toLowerCase());
+  }
+
+  // ✅ 만약 위 방식으로 값이 안 나올 경우, DOM에서 직접 파싱
+  const multiSelectElements = document.querySelectorAll('.notion-property-multi_select-item');
+  if (multiSelectElements.length > 0) {
+    return Array.from(multiSelectElements).map((el) => el.textContent?.trim().toLowerCase() || '');
+  }
+
+  return [];
+};
+
+
+  const currentCategories = getPageCategories();
+
+  // ✅ 현재 페이지가 특정 pageId의 하위인지 확인
+  const isDescendantOf = (parentPageId: string) => {
+    const allBlocks = recordMap?.block || {};
+    return Object.values(allBlocks).some((block: any) => {
+      return block.value?.parent_id === parentPageId;
     });
-
-    return activeMenu?.pageId || null;
   };
-
-  const activePageId = getActiveMenu();
 
   return (
     <header className="notion-header">
@@ -51,8 +66,13 @@ export function NotionPageHeader({
             // ✅ 현재 경로 가져오기 (쿼리 스트링 제거)
             const currentPath = router.asPath.split('?')[0];
 
-            // ✅ 현재 메뉴 활성화 여부 확인
-            const isActive = link.pageId === activePageId;
+            // ✅ 활성화 로직:
+            // 1. 현재 카테고리에 포함되거나
+            // 2. 현재 페이지가 해당 pageId의 하위에 있는 경우
+            const isActive =
+              currentCategories.includes(link.category.toLowerCase()) ||
+              isDescendantOf(link.pageId) ||
+              currentPath.includes(link.pageId);
 
             // Notion 페이지 제목 가져오기
             const pageTitle = pageBlock?.properties?.title?.[0]?.[0] || link.title;
@@ -76,4 +96,3 @@ export function NotionPageHeader({
     </header>
   );
 }
-
