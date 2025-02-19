@@ -28,7 +28,7 @@ const getPageCategories = () => {
   const currentBlock = allBlocks[currentPageId]?.value;
 
   // 다중 선택 속성 추출 (Notion에서 다중 선택 필드는 'multi_select'로 표시됨)
-  const multiSelectProperty = currentBlock?.properties?.['multi_select'];
+  const multiSelectProperty = currentBlock?.properties?.multi_select;
 
   if (multiSelectProperty && Array.isArray(multiSelectProperty)) {
     // 선택된 모든 카테고리를 배열로 반환
