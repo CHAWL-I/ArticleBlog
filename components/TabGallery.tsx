@@ -49,8 +49,7 @@ export default function TabGallery() {
         )}
       </div>
 
-      {/* 🔹 스타일 */ }
-<style jsx>{`
+      <style>{`
   .tab-container {
     display: flex;
     justify-content: center;
@@ -79,6 +78,7 @@ export default function TabGallery() {
     background: #fff;
   }
 `}</style>
+
     </div>
   );
 }

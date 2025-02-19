@@ -1,15 +1,15 @@
 import type * as types from 'notion-types'
-import { IoMoonSharp } from '@react-icons/all-files/io5/IoMoonSharp'
+/* import { IoMoonSharp } from '@react-icons/all-files/io5/IoMoonSharp'
 import { IoSunnyOutline } from '@react-icons/all-files/io5/IoSunnyOutline'
-import cs from 'classnames'
+import cs from 'classnames' */
 import { useRouter } from 'next/router'
 import * as React from 'react'
 import { Search, useNotionContext } from 'react-notion-x'
 
 import { isSearchEnabled } from '@/lib/config'
-import { useDarkMode } from '@/lib/use-dark-mode'
+/* import { useDarkMode } from '@/lib/use-dark-mode'
 
-import styles from './styles.module.css'
+import styles from './styles.module.css' */
 
 /* function ToggleThemeButton() {
   const [hasMounted, setHasMounted] = React.useState(false)
@@ -40,12 +40,6 @@ export function NotionPageHeader({
   block: types.CollectionViewPageBlock | types.PageBlock
 }) {
   const { components, mapPageUrl, recordMap } = useNotionContext()
-  
-  const navigationStyle = 'custom' // ✅ 강제 설정
-
-  console.log('🚀 NotionPageHeader 실행됨') // ✅ 실행 여부 확인
-
-  console.log('🛠️ 커스텀 네비게이션 실행됨')
 
   // ✅ 항상 표시할 특정 페이지 ID (Notion의 실제 페이지 ID 입력)
   const fixedPages = [

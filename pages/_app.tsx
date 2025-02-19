@@ -11,8 +11,8 @@ import * as Fathom from 'fathom-client'
 import { useRouter } from 'next/router'
 import posthog from 'posthog-js'
 import * as React from 'react'
-import { useNotionContext } from 'react-notion-x' // ✅ Notion 컨텍스트 불러오기
 
+/* import { useNotionContext } from 'react-notion-x' // ✅ Notion 컨텍스트 불러오기 */
 import { bootstrap } from '@/lib/bootstrap-client'
 import {
   fathomConfig,
@@ -28,7 +28,7 @@ if (!isServer) {
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  const { recordMap } = useNotionContext() // ✅ Notion 페이지 데이터 가져오기
+/*   const { recordMap } = useNotionContext() // ✅ Notion 페이지 데이터 가져오기 */
 
   console.log('🚀 _app.tsx 실행됨') // ✅ 실행되는지 확인
   console.log('🔍 pageProps:', pageProps) // ✅ 전달되는 값 확인
