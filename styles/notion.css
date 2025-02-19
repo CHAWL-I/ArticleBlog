@@ -30,7 +30,7 @@
 
 .notion-page {
   padding-bottom: calc(max(5vh, 32px)) !important;
-  line-height: 1.65;
+  line-height: 1.75;
   max-width: 1280px; /* 원하는 최대 너비 */
   width: 100%;
   margin: 0 auto; /* ✅ 중앙 정렬 */
@@ -181,75 +181,58 @@
   display: none !important;
 }
 
-.notion-header .notion-nav-header {
-  max-width: 1280px;
-  padding: 16px;
-  margin: 0 auto;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-/* notion-custom-nav를 표시하기 위한 필수 스타일 */
+/* 📁 notion.css */
+
+/* 공통 네비게이션 바 스타일 */
 .notion-custom-nav {
-  width: 100%;
-  height: 256px !important;
-  display: flex; /* 수평 정렬 */
-  gap: 16px; /* 링크 사이 간격 */
-  align-items: center; /* 세로 정렬 */
-  justify-content: flex-start; /* 좌측 정렬 */
-  padding: 8px 16px; /* 패딩 추가 */
-  background-color: transparent; /* 배경 제거 */
-  z-index: 900;
-  font-size: 1em;
-  font-weight: 500;
-  overflow-x:hidden;
-}
-
-/* 커스텀 네비게이션 내부 링크 스타일 */
-.notion-custom-nav a {
-  text-decoration: none;
-  color: var(--fg-color); /* 다크모드/라이트모드에 맞춰 색상 */
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: color 0.3s ease-in-out;
-}
-
-.notion-custom-nav .breadcrumb.button {
   display: flex;
+  gap: 16px;
   align-items: center;
-  gap: 8px;
-  font-weight: normal;
+  justify-content: flex-start;
+}
+
+/* 공통 링크 스타일 */
+.breadcrumb.button {
+  text-decoration: none;
   color: var(--text-color);
-  padding-left: 0px;
-  margin-right: 8px;
   transition: color 0.3s ease;
+  font-weight: normal;
 }
 
-/* 현재 페이지 링크에 볼드 + 밑줄 효과 */
-.notion-custom-nav .breadcrumb.button.active-link {
-  font-weight: bold;
-  text-decoration: underline;
-  color: var(--select-color-0); /* 강조 색상 */
-}
-
-/* 호버 효과 */
-.notion-custom-nav .breadcrumb.button:hover {
+.breadcrumb.button.active-link {
   color: var(--select-color-0);
 }
 
-.notion-custom-nav .page-icon {
-  font-size: 1.2em;
+.breadcrumb.button:hover {
+  color: var(--select-color-0) !important;
 }
 
-.notion-custom-nav .page-icon-img {
+/* 활성화된 링크 */
+.breadcrumb.button.active-link {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* 페이지 타이틀 공통 스타일 */
+.page-title {
+  font-size: 16px;
+  margin-left: 8px;
+  color: inherit;
+}
+
+/* 페이지 아이콘 기본 스타일 */
+.page-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* 이미지 아이콘 (Notion 이미지) */
+.page-icon-img {
   width: 20px;
   height: 20px;
+  margin-right: 8px;
   border-radius: 4px;
   object-fit: cover;
-}
-
-.notion-custom-nav .page-title {
-  font-size: 1em;
-
 }
 
 .notion-page-content-inner .notion-gallery-grid {
@@ -362,7 +345,6 @@
 .notion-h2,
 .notion-h3 {
   font-weight: 600;
-  margin-bottom: 0.25em;
 }
 
 .notion-callout {
@@ -370,7 +352,12 @@
 }
 
 .notion-hr {
-  margin: 2em 0;
+  height: 2px; /* 선의 두께 */
+  border: none; /* 기본 테두리 제거 */
+  background-color: var(--fg-color-0); /* 구분선 색상 */
+  width: 100%; /* 전체 너비 */
+  margin: 16px 0; /* 위아래 간격 */
+  border-radius: 4px; /* 둥근 모서리 */
 }
 
 .notion-page.notion-page-has-cover.notion-page-has-icon.notion-page-has-text-icon {
@@ -626,6 +613,11 @@
   color: var(--fg-color-2);
 }
 
+.searchIcon {
+  width: 16px !important;
+  height: 16px !important;
+}
+
 .notion-equation.notion-equation-block{
   align-items: center;
 }
@@ -765,8 +757,6 @@
   padding-bottom: 16px;
 }
 
-
-
 .top-toc a {
   margin: 0 15px;
   font-weight: bold;
@@ -780,6 +770,10 @@
 
 .top-toc a:hover {
   color: #007aff; /* 링크에 호버 시 색상 변경 */
+}
+
+nav.top-toc:empty {
+  display: none !important;
 }
 
 
@@ -827,6 +821,10 @@
 .notion-aside-table-of-contents {
   width: 256px;
   max-width: 256px;
+}
+
+.notion-aside-table-of-contents-header {
+  display: none;
 }
 
 /* 🔹 목차 리스트 스타일 */

@@ -39,21 +39,14 @@ html, body {
 .notion-list li {
   display: block;
   padding: 0px;
-    margin: 0 0 1em 0; /* 아래쪽에 간격 추가 */
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
+    margin: 1em 0 0.5em 0; /* 아래쪽에 간격 추가 */
     unicode-bidi: isolate;
 }
 
 .notion-h {
   display: block;
   padding: 0px;
-    margin-block-start: 1.33em;
-    margin-block-end: 1.33em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
+    margin: 1.5em 0 0.5em 0;
     font-weight: bold;
     unicode-bidi: isolate;
 }
