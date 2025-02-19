@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect,useState } from "react";
 
 const TAGS = ["전체", "게임분석", "유니티", "드로잉"];
 
@@ -13,8 +13,8 @@ export default function TabGallery() {
         const response = await fetch(`/api/notion-gallery?tag=${activeTag}`);
         const data = await response.json();
         setGalleryItems(data.results); // ✅ 가져온 데이터를 상태에 저장
-      } catch (error) {
-        console.error("데이터 불러오기 오류:", error);
+      } catch (err) {
+        console.error("데이터 불러오기 오류:", err);
       }
     }
     fetchData();
@@ -49,36 +49,36 @@ export default function TabGallery() {
         )}
       </div>
 
-      {/* 🔹 스타일 */}
-      <style jsx>{`
-        .tab-container {
-          display: flex;
-          justify-content: center;
-          margin-bottom: 20px;
-        }
-        button {
-          margin: 0 10px;
-          padding: 10px 20px;
-          border: none;
-          background: #f5f5f5;
-          cursor: pointer;
-        }
-        .active {
-          background: #007aff;
-          color: white;
-        }
-        .gallery-container {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-          gap: 16px;
-        }
-        .gallery-item {
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          background: #fff;
-        }
-      `}</style>
+      {/* 🔹 스타일 */ }
+<style jsx>{`
+  .tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    border: none;
+    background: #f5f5f5;
+    cursor: pointer;
+  }
+  .active {
+    background: #007aff;
+    color: white;
+  }
+  .gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .gallery-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #fff;
+  }
+`}</style>
     </div>
   );
 }

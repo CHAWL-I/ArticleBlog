@@ -7,13 +7,10 @@ import 'styles/prism-theme.css' // Prism 테마
 import 'prismjs/themes/prism-okaidia.css'
 
 import type { AppProps } from 'next/app'
-import Link from 'next/link' // ✅ Next.js 페이지 이동을 위한 Link 추가
 import * as Fathom from 'fathom-client'
 import { useRouter } from 'next/router'
 import posthog from 'posthog-js'
 import * as React from 'react'
-
-import { NotionPageHeader } from '@/components/NotionPageHeader'
 import { useNotionContext } from 'react-notion-x' // ✅ Notion 컨텍스트 불러오기
 
 import { bootstrap } from '@/lib/bootstrap-client'
@@ -72,11 +69,11 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [])
 
   // ✅ `recordMap.block`에서 `PageBlock` 또는 `CollectionViewPageBlock`만 가져오기
-  const block = recordMap?.block
+  /* const block = recordMap?.block
     ? Object.values(recordMap.block)
         .map((b: any) => b.value)
         .find((b) => b.type === 'page' || b.type === 'collection_view_page') // ✅ `page` 또는 `collection_view_page` 타입만 필터링
-    : null
+    : null */
 
   return (
     <>
