@@ -220,11 +220,11 @@
   color: var(--select-color-0) !important;
 }
 
-/* 활성화된 링크 */
-.breadcrumb.button.active-link {
-  font-weight: bold;
-  text-decoration: underline;
+/* ✅ 선택된 메뉴 항목 스타일 */
+.breadcrumb.button.selected {
   color: var(--select-color-0);
+  font-weight: bold;
+  border-bottom: 2px solid var(--select-color-0);
 }
 
 .notion-header .breadcrumb {

@@ -52,9 +52,17 @@ export function NotionPageHeader({
     }
   }, [recordMap]);
 
-  const isDescendantOf = (parentPageId: string) => {
-    const allBlocks = recordMap?.block || {};
-    return Object.values(allBlocks).some((block: any) => block.value?.parent_id === parentPageId);
+  // ✅ 현재 페이지가 활성화 상태인지 확인 (경로 + 카테고리 비교)
+  const isActive = (pageId: string, category: string) => {
+    const currentPath = router.asPath.split('?')[0];
+
+    // ✅ 1. 현재 경로가 pageId를 포함하는지 확인
+    const pathMatch = currentPath.includes(pageId);
+
+    // ✅ 2. currentCategories에 category가 있는지 확인
+    const categoryMatch = currentCategories.includes(category.toLowerCase());
+
+    return pathMatch || categoryMatch;
   };
 
   return (
@@ -67,18 +75,18 @@ export function NotionPageHeader({
               href={mapPageUrl(link.pageId)}
               key={index}
               className={`breadcrumb button ${
-                link.title === 'HOME' ? '' : 'desktop-only'
-              }`}
+                isActive(link.pageId, link.category) ? 'selected' : ''
+              } ${link.title === 'HOME' ? '' : 'desktop-only'}`}
             >
               <span className="page-title">{link.title}</span>
             </components.PageLink>
           ))}
         </nav>
-  
+
         {/* 📌 오른쪽: 검색 및 햄버거 메뉴 */}
         <div className="notion-nav-header-rhs">
           {isSearchEnabled && <Search block={block} title={null} />}
-  
+
           {/* 📌 햄버거 버튼 */}
           <button
             className={`hamburger-btn ${isMobileMenuOpen ? 'open' : ''}`}
@@ -89,7 +97,7 @@ export function NotionPageHeader({
             <span className="hamburger-line"></span>
           </button>
         </div>
-  
+
         {/* 📌 모바일 메뉴 */}
         <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
           {fixedPages
@@ -98,7 +106,7 @@ export function NotionPageHeader({
               <components.PageLink
                 href={mapPageUrl(link.pageId)}
                 key={index}
-                className="breadcrumb button"
+                className={`breadcrumb button ${isActive(link.pageId, link.category) ? 'selected' : ''}`}
               >
                 <span className="page-title">{link.title}</span>
               </components.PageLink>
@@ -106,5 +114,5 @@ export function NotionPageHeader({
         </nav>
       </div>
     </header>
-  );     
+  );
 }
