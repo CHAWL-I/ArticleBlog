@@ -62,23 +62,23 @@ export function NotionPageHeader({
       <div className="notion-nav-header">
         {/* 📌 HOME은 항상 표시 */}
         <nav className="notion-custom-nav">
-          {fixedPages
-            .filter(link => link.title === 'HOME')
-            .map((link, index) => (
-              <components.PageLink
-                href={mapPageUrl(link.pageId)}
-                key={index}
-                className="breadcrumb button"
-              >
-                <span className="page-title">{link.title}</span>
-              </components.PageLink>
-            ))}
+          {fixedPages.map((link, index) => (
+            <components.PageLink
+              href={mapPageUrl(link.pageId)}
+              key={index}
+              className={`breadcrumb button ${
+                link.title === 'HOME' ? '' : 'desktop-only'
+              }`}
+            >
+              <span className="page-title">{link.title}</span>
+            </components.PageLink>
+          ))}
         </nav>
-
+  
         {/* 📌 오른쪽: 검색 및 햄버거 메뉴 */}
         <div className="notion-nav-header-rhs">
           {isSearchEnabled && <Search block={block} title={null} />}
-
+  
           {/* 📌 햄버거 버튼 */}
           <button
             className={`hamburger-btn ${isMobileMenuOpen ? 'open' : ''}`}
@@ -89,7 +89,7 @@ export function NotionPageHeader({
             <span className="hamburger-line"></span>
           </button>
         </div>
-
+  
         {/* 📌 모바일 메뉴 */}
         <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
           {fixedPages
@@ -106,5 +106,5 @@ export function NotionPageHeader({
         </nav>
       </div>
     </header>
-  );
+  );     
 }

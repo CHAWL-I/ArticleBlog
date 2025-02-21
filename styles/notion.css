@@ -41,7 +41,7 @@
   max-width: 1100px;
   width: 100%;
   margin: 0 auto; /* ✅ 중앙 정렬 */
-  margin-top: 32px !important;
+  margin-top: calc(1.5 * var(--notion-header-height)) !important;
   padding: 0 20px;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -52,6 +52,10 @@
 
 .index-page {
   --notion-max-width: 900px;
+}
+
+.dark-mode .styles_container__2FWVt {
+  color: var(--fg-color);
 }
 
 .notion-text {
@@ -223,45 +227,46 @@
   color: var(--select-color-0);
 }
 
-/* 📌 기본 헤더 */
+.notion-header .breadcrumb {
+  justify-content: left;
+
+}
+
+/* 📌 네비게이션 */
 .notion-nav-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  position: relative;
-}
-
-/* 📌 HOME 메뉴 */
-.notion-custom-nav {
-  display: flex;
-  gap: 1rem;
+  max-width: 1100px !important;
+  margin: 0 auto;
+  overflow: visible;
 }
 
 /* 📌 모바일 메뉴 */
 .mobile-nav {
   display: none;
-  position: fixed; /* ✅ 화면 전체에 고정 */
-  top: 0;
+  position: absolute;
+  top: 100%; /* 헤더 바로 아래 */
   left: 0;
   width: 100%;
-  height: 100vh; /* ✅ 전체 높이 */
-  background: var(--bg-color, rgba(255, 255, 255, 0.95));
-  border-top: 1px solid #ddd;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--bg-color);
+  /* border-top: 1px solid #ddd; */
+  box-shadow: 0 2px 2px var(--fg-color-0);
   z-index: 1500;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  transform: translateY(-100%); /* ✅ 초기에는 숨김 */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(-20px);
   opacity: 0;
   pointer-events: none;
-  display: flex;
   flex-direction: column;
-  padding: 4rem 1rem; /* 헤더 영역 아래로 */
+  padding: 0 10px;
 }
+
 
 /* 📌 모바일 메뉴 열기 */
 .mobile-nav.open {
-  transform: translateY(0); /* ✅ 보이게 */
+  display: flex;
+  transform: translateY(0);
   opacity: 1;
   pointer-events: auto;
 }
@@ -271,6 +276,7 @@
   display: block;
   border-bottom: 1px solid var(--bg-color);
   font-size: 1.2rem;
+  text-align: left;
   color: var(--fg-color);
 }
 
@@ -284,27 +290,26 @@
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 1600; /* ✅ 모바일 메뉴 위에 */
+  z-index: 1100; /* ✅ 모바일 메뉴 위에 */
 }
 
 .hamburger-line {
   width: 100%;
   height: 2px;
-  background-color: var(--fg-color) !important;
+  background-color: var(--fg-color);
   border-radius: 2px;
   transition: transform 0.3s ease, opacity 0.3s ease;
-  opacity: 1;
 }
 
 /* 📌 햄버거 X자 애니메이션 */
 .hamburger-btn.open .hamburger-line:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+  transform: translateY(6px) rotate(45deg);
 }
 .hamburger-btn.open .hamburger-line:nth-child(2) {
   opacity: 0;
 }
 .hamburger-btn.open .hamburger-line:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 /* 📌 검색 및 햄버거 버튼 정렬 */
@@ -702,7 +707,6 @@
 .notion-page-icon-hero.notion-page-icon-image {
   border-radius: 50%;
   box-shadow: 0 8px 16px 0 rgb(0 0 0 / 21%);
-  margin-top: 16px;
 }
 .notion-page-icon-hero.notion-page-icon-image span,
 .notion-page-icon-hero.notion-page-icon-image img {
@@ -710,12 +714,12 @@
 }
 
 .notion-header {
-  z-index: 1000; /* 헤더가 가장 위로 */
+  position: fixed;
+  z-index: 2000; /* 헤더가 가장 위로 */
   font-size: 1em;
   font-weight: 500;
   background: hsla(0, 0%, 100%, 0.8);
   backdrop-filter: saturate(180%) blur(16px);
-  max-width: 1100px !important; /* 최대 너비 */
   margin: 0 auto; /* ✅ 가운데 정렬 */
   display: flex; /* ✅ Flexbox를 사용하여 내부 요소 정렬 */
   justify-content: space-between; /* 내부 요소 정렬 */
@@ -723,6 +727,7 @@
   width: 100%; /* 전체 너비를 차지 */
   padding: 0 16px; /* 좌우 여백 */
   box-sizing: border-box; /* 패딩 포함한 너비 계산 */
+  overflow: visible;
 }
 
 .dark-mode .notion-header {
@@ -1035,10 +1040,17 @@ nav.top-toc:empty {
 /* 📌 반응형 - 모바일 */
 @media (max-width: 479px) {
 
-  .mobile-nav {
+  /* 📌 HOME 메뉴는 유지 */
+  .notion-custom-nav {
+    display: flex;
+  }
+
+  /* 📌 HOME 외의 메뉴는 숨김 */
+  .notion-custom-nav a:not(:first-child) {
     display: none;
   }
 
+  /* 📌 햄버거 버튼 보이기 */
   .hamburger-btn {
     display: flex;
   }
@@ -1050,7 +1062,12 @@ nav.top-toc:empty {
     display: flex; /* ✅ 데스크탑에서 메뉴 보이기 */
   }
 
-  .mobile-nav {
+  /* ✅ HOME 외 메뉴를 보이도록 수정 */
+  .notion-custom-nav a:not(:first-child) {
+    display: flex !important; /* ✅ 강제 적용 */
+  }
+
+  .mobile-nav.open {
     display: none; /* ✅ 데스크탑에서 모바일 메뉴 숨김 */
   }
 
