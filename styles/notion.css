@@ -184,13 +184,6 @@
   border: none;
 }
 
-
-.notion-header {
-  z-index: 900;
-  font-size: 1em;
-  font-weight: 500;
-}
-
 /* 🔹 Breadcrumbs에서 첫 번째(Home) 링크만 보이도록 설정 */
 .breadcrumbs a:not(:first-child) {
   display: none !important;
@@ -228,6 +221,97 @@
   font-weight: bold;
   text-decoration: underline;
   color: var(--select-color-0);
+}
+
+/* 📌 기본 헤더 */
+.notion-nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  position: relative;
+}
+
+/* 📌 HOME 메뉴 */
+.notion-custom-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+/* 📌 모바일 메뉴 */
+.mobile-nav {
+  display: none;
+  position: fixed; /* ✅ 화면 전체에 고정 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* ✅ 전체 높이 */
+  background: var(--bg-color, rgba(255, 255, 255, 0.95));
+  border-top: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1500;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateY(-100%); /* ✅ 초기에는 숨김 */
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  padding: 4rem 1rem; /* 헤더 영역 아래로 */
+}
+
+/* 📌 모바일 메뉴 열기 */
+.mobile-nav.open {
+  transform: translateY(0); /* ✅ 보이게 */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-nav a {
+  padding: 1rem;
+  display: block;
+  border-bottom: 1px solid var(--bg-color);
+  font-size: 1.2rem;
+  color: var(--fg-color);
+}
+
+/* 📌 햄버거 버튼 */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 28px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1600; /* ✅ 모바일 메뉴 위에 */
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 2px;
+  background-color: var(--fg-color) !important;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+/* 📌 햄버거 X자 애니메이션 */
+.hamburger-btn.open .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburger-btn.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+.hamburger-btn.open .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* 📌 검색 및 햄버거 버튼 정렬 */
+.notion-nav-header-rhs {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* 페이지 타이틀 공통 스타일 */
@@ -618,6 +702,7 @@
 .notion-page-icon-hero.notion-page-icon-image {
   border-radius: 50%;
   box-shadow: 0 8px 16px 0 rgb(0 0 0 / 21%);
+  margin-top: 16px;
 }
 .notion-page-icon-hero.notion-page-icon-image span,
 .notion-page-icon-hero.notion-page-icon-image img {
@@ -625,6 +710,9 @@
 }
 
 .notion-header {
+  z-index: 1000; /* 헤더가 가장 위로 */
+  font-size: 1em;
+  font-weight: 500;
   background: hsla(0, 0%, 100%, 0.8);
   backdrop-filter: saturate(180%) blur(16px);
   max-width: 1100px !important; /* 최대 너비 */
@@ -944,6 +1032,32 @@ nav.top-toc:empty {
   transition: width 0.3s ease;
 }
 
+/* 📌 반응형 - 모바일 */
+@media (max-width: 479px) {
+
+  .mobile-nav {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+}
+
+/* 📌 반응형 - 데스크탑 뷰 */
+@media (min-width: 480px) {
+  .notion-custom-nav {
+    display: flex; /* ✅ 데스크탑에서 메뉴 보이기 */
+  }
+
+  .mobile-nav {
+    display: none; /* ✅ 데스크탑에서 모바일 메뉴 숨김 */
+  }
+
+  .hamburger-btn {
+    display: none; /* ✅ 데스크탑에서는 햄버거 버튼 숨김 */
+  }
+}
 
 /* 📌 480px 이하 (모바일) */
 @media (max-width: 479px) {

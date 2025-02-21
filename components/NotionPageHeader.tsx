@@ -21,15 +21,14 @@ export function NotionPageHeader({
   ];
 
   const [currentCategories, setCurrentCategories] = useState<string[]>([]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // ✅ 카테고리 추출 로직
   useEffect(() => {
     const getPageCategories = () => {
       const allBlocks = recordMap?.block || {};
       const currentPageId = Object.keys(allBlocks)[0];
       const currentBlock = allBlocks[currentPageId]?.value;
-
-      console.log("🛠 currentBlock:", currentBlock);
-      console.log("🛠 currentBlock.properties:", currentBlock?.properties);
 
       const multiSelectProperty = currentBlock?.properties?.multi_select;
 
@@ -49,7 +48,6 @@ export function NotionPageHeader({
 
     if (recordMap && Object.keys(recordMap).length > 0) {
       const categories = getPageCategories();
-      console.log("📋 추출된 카테고리:", categories);
       setCurrentCategories(categories);
     }
   }, [recordMap]);
@@ -62,34 +60,50 @@ export function NotionPageHeader({
   return (
     <header className="notion-header">
       <div className="notion-nav-header">
+        {/* 📌 HOME은 항상 표시 */}
         <nav className="notion-custom-nav">
-          {fixedPages.map((link, index) => {
-            const pageBlock = recordMap?.block?.[link.pageId]?.value;
-            const currentPath = router.asPath.split('?')[0];
-
-            // ✅ .some() → .includes()로 수정
-            const isActive =
-              currentCategories.includes(link.category.toLowerCase()) ||
-              isDescendantOf(link.pageId) ||
-              currentPath.includes(link.pageId);
-
-            const pageTitle = pageBlock?.properties?.title?.[0]?.[0] || link.title;
-
-            return (
+          {fixedPages
+            .filter(link => link.title === 'HOME')
+            .map((link, index) => (
               <components.PageLink
                 href={mapPageUrl(link.pageId)}
                 key={index}
-                className={`breadcrumb button ${isActive ? 'active-link' : ''}`}
+                className="breadcrumb button"
               >
-                <span className="page-title">{pageTitle}</span>
+                <span className="page-title">{link.title}</span>
               </components.PageLink>
-            );
-          })}
+            ))}
         </nav>
 
+        {/* 📌 오른쪽: 검색 및 햄버거 메뉴 */}
         <div className="notion-nav-header-rhs">
           {isSearchEnabled && <Search block={block} title={null} />}
+
+          {/* 📌 햄버거 버튼 */}
+          <button
+            className={`hamburger-btn ${isMobileMenuOpen ? 'open' : ''}`}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+          </button>
         </div>
+
+        {/* 📌 모바일 메뉴 */}
+        <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
+          {fixedPages
+            .filter(link => link.title !== 'HOME')
+            .map((link, index) => (
+              <components.PageLink
+                href={mapPageUrl(link.pageId)}
+                key={index}
+                className="breadcrumb button"
+              >
+                <span className="page-title">{link.title}</span>
+              </components.PageLink>
+            ))}
+        </nav>
       </div>
     </header>
   );

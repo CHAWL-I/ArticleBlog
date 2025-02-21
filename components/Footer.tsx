@@ -1,4 +1,5 @@
 import { FaEnvelopeOpenText } from '@react-icons/all-files/fa/FaEnvelopeOpenText'
+import { FaBehance } from '@react-icons/all-files/fa/FaBehance';
 import { FaGithub } from '@react-icons/all-files/fa/FaGithub'
 import { FaLinkedin } from '@react-icons/all-files/fa/FaLinkedin'
 import { FaMastodon } from '@react-icons/all-files/fa/FaMastodon'
@@ -63,6 +64,18 @@ export function FooterImpl() {
             rel='noopener noreferrer'
           >
             <FaTwitter />
+          </a>
+        )}
+
+        {config.behance && (
+          <a
+            className={styles.behance}
+            href={`https://behance.net/${config.behance}`}
+            title={`Behance @${config.behance}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <FaBehance />
           </a>
         )}
 
