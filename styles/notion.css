@@ -295,7 +295,7 @@
 }
 
 .hamburger-line {
-  width: 55%;
+  width: 65%;
   height: 2px;
   background-color: var(--fg-color);
   border-radius: 2px;
@@ -317,13 +317,8 @@
 .notion-nav-header-rhs {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  /* gap: 1rem; */
 }
-
-.notion-nav-header {
-  padding: 0 16px;
-}
-
 /* 페이지 타이틀 공통 스타일 */
 .page-title {
   font-size: 16px;
