@@ -286,39 +286,42 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  width: 40px;
-  height: 20px;
+  width: min(2.5rem, 8vw); /* ✅ 작은 화면에서는 rem, 큰 화면에서는 vw */
+  height: auto;
+  aspect-ratio: 1 / 1; /* ✅ 정사각형 유지 */
   background: none;
   border: none;
   cursor: pointer;
   z-index: 1100; /* ✅ 모바일 메뉴 위에 */
 }
 
+/* 📌 햄버거 버튼 내부 선 */
 .hamburger-line {
   width: 65%;
-  height: 2px;
+  height: 0.2rem; /* ✅ 높이를 rem으로 조정 */
   background-color: var(--fg-color);
   border-radius: 2px;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* 📌 햄버거 X자 애니메이션 */
+/* 📌 햄버거 버튼 X자 애니메이션 */
 .hamburger-btn.open .hamburger-line:nth-child(1) {
-  transform: translateY(6px) rotate(45deg);
+  transform: translateY(0.6rem) rotate(45deg);
 }
 .hamburger-btn.open .hamburger-line:nth-child(2) {
   opacity: 0;
 }
 .hamburger-btn.open .hamburger-line:nth-child(3) {
-  transform: translateY(-6px) rotate(-45deg);
+  transform: translateY(-0.6rem) rotate(-45deg);
 }
 
 /* 📌 검색 및 햄버거 버튼 정렬 */
 .notion-nav-header-rhs {
   display: flex;
   align-items: center;
-  /* gap: 1rem; */
+  gap: 1rem; /* ✅ 버튼 간격 유지 */
 }
+
 /* 페이지 타이틀 공통 스타일 */
 .page-title {
   font-size: 16px;
