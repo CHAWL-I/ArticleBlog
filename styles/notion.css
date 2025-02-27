@@ -285,7 +285,8 @@
   display: none;
   flex-direction: column;
   justify-content: space-around;
-  width: 28px;
+  align-items: center;
+  width: 40px;
   height: 20px;
   background: none;
   border: none;
@@ -294,7 +295,7 @@
 }
 
 .hamburger-line {
-  width: 100%;
+  width: 55%;
   height: 2px;
   background-color: var(--fg-color);
   border-radius: 2px;
