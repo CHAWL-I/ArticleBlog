@@ -286,8 +286,8 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  width: 50px;
-  height: 20px;
+  width: 52px;
+  height: 18px;
   background: none;
   border: none;
   cursor: pointer;
@@ -304,13 +304,13 @@
 
 /* 📌 햄버거 X자 애니메이션 */
 .hamburger-btn.open .hamburger-line:nth-child(1) {
-  transform: translateY(6px) rotate(45deg);
+  transform: translateY(5px) rotate(45deg);
 }
 .hamburger-btn.open .hamburger-line:nth-child(2) {
   opacity: 0;
 }
 .hamburger-btn.open .hamburger-line:nth-child(3) {
-  transform: translateY(-6px) rotate(-45deg);
+  transform: translateY(-5px) rotate(-45deg);
 }
 
 /* 📌 검색 및 햄버거 버튼 정렬 */
