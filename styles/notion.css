@@ -23,7 +23,7 @@
 
 .notion-frame {
   display: flex;
-  justify-content: center; /* ✅ 중앙 정렬 */
+  justify-content: center; /* ✅ 중앙 정렬임 */
   align-items: flex-start;
   width: 100%;
 }
