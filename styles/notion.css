@@ -482,7 +482,7 @@
 }
 
 .notion-hr {
-  height: 2px; /* 선의 두께 */
+  height: 0.065rem; /* 선의 두께 */
   border: none; /* 기본 테두리 제거 */
   background-color: var(--fg-color-0); /* 구분선 색상 */
   width: 100%; /* 전체 너비 */
@@ -744,10 +744,72 @@
   }
 }
 
-.notion-bookmark:hover {
-  border-image: linear-gradient(90.68deg, #b439df 0.26%, #e5337e 102.37%);
-  border-image-slice: 1;
+/* ✅ notion-bookmark 아이콘과 제목을 가로 정렬 */
+.notion-bookmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* 아이콘과 제목 사이 간격 */
+  padding: 4px 0px;
+  /* border: none; */
+  border-radius: 6px;
+  max-width: 100%; /* 부모 요소 크기에 맞춤 */
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important; /* ✅ 요소가 줄바꿈되지 않도록 설정 */
+  position: relative;
 }
+
+/* ✅ notion-bookmark 내부 요소를 가로 배치 */
+.notion-bookmark a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+}
+
+/* 📌 notion-bookmark-link-icon을 왼쪽에 배치 */
+.notion-bookmark-link-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.notion-bookmark-link-icon img {
+  border-radius: 4px;
+}
+
+/* 📌 notion-bookmark-title을 아이콘 오른쪽에 배치 */
+.notion-bookmark-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  /* text-decoration: underline; */
+  color: var(--fg-color);
+  flex-grow: 1; /* ✅ 너비 자동 조정 */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-left: 32px;
+}
+
+/* ✅ 기존 불필요한 정보 숨기기 */
+.notion-bookmark-link-text,
+.notion-bookmark-image,
+.notion-bookmark-description {
+  display: none !important;
+}
+
 
 .notion-block-ab9a258d6cf444f3bb40dc2600feae91 .notion-column {
   padding: 0;
