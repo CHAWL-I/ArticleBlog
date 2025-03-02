@@ -732,7 +732,7 @@
 }
 
 .dark-mode .notion-header {
-  background: transparent;
+  background: var(--bg-color);
   box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.1);
   backdrop-filter: saturate(100%) blur(20px);
 }
@@ -849,27 +849,27 @@
 }
 /* 1단계: ● (채워진 동그라미) */
 .notion-list-disc > li::before {
-  content: "▶"; /* 채워진 동그라미 */
+  content: "●"; /* 채워진 동그라미 */
   position: absolute;
   left: -8px;
-  top: 2px;
-  font-size: .8em;
-  color: #333;
+  top: 7px;
+  font-size: .5em;
+  color: var(--fg-color);
   padding-left: 8px;
 }
 
 /* 2단계: ○ (빈 동그라미) */
 .notion-list-disc > ul > li::before {
-  content: "▶"; /* 채워진 연한 동그라미 */
+  content: "○"; /* 채워진 연한 동그라미 */
   position: absolute;
-  color: #cbcbcb;
+  color: var(--fg-color);
 }
 
 /* 3단계: ■ (네모) */
 .notion-list-disc > ul > ul > li::before {
-  content: "▷" !important; /* 빈 동그라미 */
+  content: "■" !important; /* 빈 동그라미 */
   position: absolute;
-  color: #333;
+  color: var(--fg-color);
 }
 
 /* ✅ 리스트 안에 `div.notion-text`가 있을 경우에도 적용 */
