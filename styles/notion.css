@@ -750,7 +750,7 @@
   align-items: center;
   gap: 8px; /* 아이콘과 제목 사이 간격 */
   padding: 4px 0px;
-  /* border: none;;  */ 
+  border: none;
   border-radius: 6px;
   max-width: 100%; /* 부모 요소 크기에 맞춤 */
   overflow: hidden;
