@@ -9,7 +9,7 @@ export default siteConfig({
   rootNotionSpaceId: null,
 
   // basic site info (required)
-  name: 'UIUX Design',
+  name: 'UIUX Portfolio',
   domain: 'chawl.uiux',
   author: 'Hyeonji Chae',
 
