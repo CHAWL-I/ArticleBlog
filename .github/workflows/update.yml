@@ -1,0 +1,28 @@
+name: Daily Trigger Update
+
+on:
+  schedule:
+    - cron: '0 23 * * *' # 한국시간 오전 8시 (UTC 기준 23시)
+  workflow_dispatch: # 수동 실행 버튼 추가
+
+jobs:
+  update-trigger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update .trigger file
+        run: echo "// update from GitHub Actions at $(date '+%Y-%m-%d %H:%M:%S')" > .trigger
+
+      - name: Commit and push if changed
+        run: |
+          git add .trigger
+          git diff --cached --quiet || git commit -m "chore: daily update .trigger"
+          git push
