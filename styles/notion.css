@@ -143,14 +143,14 @@
 /* 🎬 비디오 및 iframe (컨테이너) */
 .notion-page-content-inner .notion-asset-wrapper-video {
   width: 100% !important; /* 부모 요소 가득 차게 */
-  max-width: 100% !important;
+  max-width: 640px !important;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto;
-  aspect-ratio: 16 / 9; /* 16:9 비율 유지 */
-  max-height: 360px; /* 최대 높이 제한 */
-  overflow: hidden; /* 넘치는 부분 숨김 */
+  margin: 0.5em 0 1em 0 !important;
+  aspect-ratio: 16 / 9 !important; /* 16:9 비율 유지 */
+  /*max-height: 360px; /* 최대 높이 제한 */
+  overflow: visible; /* 넘치는 부분 숨김 */
   position: relative; /* 자식 요소 절대 위치용 */
 }
 
@@ -159,7 +159,6 @@
 .notion-page-content-inner .notion-asset-wrapper-video iframe {
   width: 100% !important;
   height: 100% !important; /* 부모 비율에 맞춤 */
-  max-height: 360px !important;
   object-fit: contain; /* 비율 유지하면서 맞춤 */
   display: block;
   position: absolute; /* 부모 기준으로 배치 */
