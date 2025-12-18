@@ -58,14 +58,10 @@
   color: var(--fg-color);
 }
 
-.notion-text {
-  padding: 0.2em 2px;
-  line-height: 1.5;
-}
-
 .notion-asset-caption {
   text-align: right;
-  padding: 2px;
+  padding: 0;
+  margin: 0.1rem 0 0.5rem 0;
   font-size: 12px;
 }
 
@@ -267,7 +263,7 @@
   opacity: 0;
   pointer-events: none;
   flex-direction: column;
-  padding: 0 10px;
+  padding: 0 24px;
 }
 
 
@@ -787,7 +783,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px; /* 아이콘과 제목 사이 간격 */
-  padding: 4px 0px;
+  padding: 0px;
   border: none;
   border-radius: 6px;
   max-width: 100%; /* 부모 요소 크기에 맞춤 */

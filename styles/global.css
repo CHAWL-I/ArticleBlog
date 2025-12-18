@@ -14,9 +14,14 @@ html {
   margin: 0;
 }
 
+/*폰트 임포트*/
+/* 폰트 등록 */
+@import url('/public/fonts/Spoqa Han Sans Neo.css');
+
+
 /* 🔹 전역 폰트 변수 설정 */
 :root {
-  --font-primary: 'WantedSansVariable', WantedSansVariable, -apple-system, BlinkMacSystemFont, 
+  --font-primary: 'Spoqa Han Sans Neo', 'sans-serif', -apple-system, BlinkMacSystemFont, 
     system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Apple SD Gothic Neo', sans-serif;
 }
 
@@ -25,8 +30,8 @@ html, body {
   font-family: var(--font-primary) !important;
   font-size: 1.14rem;
   letter-spacing: -0.04em;
-  line-height: 1.5;
-  font-weight: 300;
+  line-height: 1.75rem;
+  font-weight: 400;
   overflow-x: visible;
 }
 
@@ -49,6 +54,21 @@ html, body {
     margin: 1.5em 0 0.5em 0;
     font-weight: bold;
     unicode-bidi: isolate;
+}
+
+.notion-text {
+  /*padding: 0.2em 2px;*/
+  padding: 0px;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.notion-text:first-child{
+  margin: 0.1rem 0 0.1rem 0;
+}
+
+.notion-blank {
+  padding: 0;
+  margin: 0;
 }
 
 /* 🔹 트윗 블록 스타일 */
