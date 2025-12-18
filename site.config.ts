@@ -2,14 +2,14 @@ import { siteConfig } from './lib/site-config'
 
 export default siteConfig({
   // the site's root Notion page (required)
-  rootNotionPageId: '19df3422532d8092a25ee9bbb2feae72',
+  rootNotionPageId: '2cdf3422532d80bda8a7dd80223460d0',
 
   // if you want to restrict pages to a single notion workspace (optional)
   // (this should be a Notion ID; see the docs for how to extract this)
   rootNotionSpaceId: null,
 
   // basic site info (required)
-  name: 'UIUX Portfolio',
+  name: 'HJ CHAE - UIUX Portfolio',
   domain: 'chawl.uiux',
   author: 'Hyeonji Chae',
 
