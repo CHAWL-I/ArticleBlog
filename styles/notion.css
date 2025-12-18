@@ -206,6 +206,7 @@
   gap: 16px;
   align-items: center;
   justify-content: flex-start;
+  margin-left: 12px;
 }
 
 /* 공통 링크 스타일 */
@@ -225,10 +226,12 @@
   color: var(--select-color-0);
   font-weight: bold;
   border-bottom: 2px solid var(--select-color-0);
+  margin-bottom: -2px;
 }
 
 .notion-header .breadcrumb {
   justify-content: left;
+  border-radius: 0px;
 
 }
 
@@ -323,7 +326,7 @@
 /* 페이지 타이틀 공통 스타일 */
 .page-title {
   font-size: 16px;
-  margin-left: 8px;
+  margin-left: 0px;
   color: inherit;
 }
 
