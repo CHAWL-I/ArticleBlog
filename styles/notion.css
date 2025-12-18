@@ -74,8 +74,9 @@
   flex-direction: column;
 }
 
-/* ✅ Cover가 있는 페이지에만 적용 */
-.notion-page.notion-page-has-cover.notion-full-page .notion-page-content {
+/* ✅ 아이콘이 없는 페이지에만 적용 */
+.notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
+.notion-page-content {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -88,7 +89,8 @@
   box-sizing: border-box;
 }
 
-.notion-page.notion-page-has-cover.notion-full-page .notion-page-content-inner {
+.notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
+.notion-page-content-inner {
   flex: 1 1 auto;
   max-width: 100%;
   width: 100%;
@@ -98,7 +100,8 @@
 }
 
 /* ✅ Cover가 없는 페이지에만 적용 */
-.notion-page.notion-page-no-cover.notion-full-page .notion-page-content {
+.notion-page.notion-page-no-cover.notion-page-has-icon.notion-page-has-image-icon.notion-full-page
+.notion-page-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -109,7 +112,8 @@
   box-sizing: border-box;
 }
 
-.notion-page.notion-page-no-cover.notion-full-page .notion-page-content-inner {
+.notion-page.notion-page-no-cover.notion-page-has-icon.notion-page-has-image-icon.notion-full-page
+.notion-page-content-inner {
   width: 100%;
   max-width: 768px;
   box-sizing: border-box;
@@ -358,7 +362,6 @@
 }
 
 .notion-gallery-grid {
-  padding-top: 2.7rem;
   border-top: 0;
 }
 
@@ -500,7 +503,7 @@
 }
 
 /* ✅ 특정 페이지 구조에서 notion-aside 숨기기 */
-.notion-page.notion-page-has-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page .notion-aside {
+.notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page .notion-aside {
   display: none !important;
   visibility: hidden;
 }
