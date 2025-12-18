@@ -611,20 +611,20 @@
 .notion-orange_background,
 .notion-brown_background,
 .notion-gray_background {
-  padding: 0 0.5rem;
-  margin: 0 -0.5rem 0 -0.25rem;
-  border-radius: 0.5rem;
-  border-bottom-left-radius: 0.125rem;
+  padding: 0 0.2rem;
+  /*margin: 0 -0.5rem 0 -0.25rem;*/
+  border-radius: 0rem;
+  border-bottom-left-radius: 0rem;
   box-decoration-break: clone;
 
   background-color: none;
 
   /* light yellow */
   background-image: linear-gradient(
-    119deg,
+    90deg,
     var(--bg-color),
-    #fff697 10.5%,
-    #fdf59d 85.29%,
+    #fff697 2px,
+    #fdf59d 25%,
     var(--bg-color)
   );
 }
@@ -633,10 +633,10 @@
 .notion-pink_background {
   /* light pink */
   background-image: linear-gradient(
-    119deg,
+    90deg,
     var(--bg-color),
-    #f5b8d1 10.5%,
-    #f9bcd3 85.29%,
+    #f5b8d1 2px,
+    #f9bcd3 25%,
     var(--bg-color)
   );
 }
@@ -645,10 +645,10 @@
 .notion-gray_background {
   /* light blue */
   background-image: linear-gradient(
-    119deg,
+    90deg,
     var(--bg-color),
-    #adedfc 10.5%,
-    #adebfd 85.29%,
+    #adedfc 2px,
+    #adebfd 25%,
     var(--bg-color)
   );
 }
@@ -657,10 +657,10 @@
 .notion-orange_background {
   /* light red */
   background-image: linear-gradient(
-    119deg,
+    90deg,
     var(--bg-color),
-    #f5c4ff 10.5%,
-    #e7a8fc 85.29%,
+    #f5c4ff 2px,
+    #e7a8fc 25%,
     var(--bg-color)
   );
 }
@@ -668,10 +668,10 @@
 .notion-teal_background {
   /* light green */
   background-image: linear-gradient(
-    119deg,
+    90deg,
     var(--bg-color),
-    #d4eabc 10.5%,
-    #d2eabc 85.29%,
+    #d4eabc 2px,
+    #d2eabc 25%,
     var(--bg-color)
   );
 }
@@ -679,10 +679,10 @@
 .notion-brown_background {
   /* dark blue */
   background-image: linear-gradient(
-    119deg,
+    90deg,
     var(--bg-color),
-    #96b8ec 10.5%,
-    #a6c3f0 85.29%,
+    #96b8ec 2px,
+    #a6c3f0 25%,
     var(--bg-color)
   );
 }
@@ -865,34 +865,31 @@
 }
 
 .notion-list-numbered {
-  list-style-type: none !important;
+  list-style-type: none !important; 
   padding-inline-start: 1em;
-  padding-left: 16px;
 }
 
-.notion-list-numbered:not(.nested) {
-  counter-reset: list-counter;
-}
-
-/* ✅ 리스트 아이템(각 li 요소)에 숫자 넘버링 적용 */
+/* ✅ 리스트 아이템(각 li 요소) */
 .notion-list-numbered > li {
+  display: list-item !important; 
   position: relative;
-  counter-increment: list-counter; /* ✅ 숫자 증가 */
-  padding-left: 16px;
+  padding-left: 1em;
 }
 
 .notion-list-numbered > li::before {
-  content: counter(list-counter) "."; /* ✅ start 값 사용하여 넘버링 적용 */
+  /* 3. 핵심: HTML의 start="2" 값을 그대로 가져오는 'list-item' 카운터 사용 */
+  /* 뒤에 decimal을 붙여야 .0 없이 정수로 나옵니다. */
+  content: counter(list-item, decimal) "."; 
   position: absolute;
-  left: -8px;
+  left: -2px;
   top: 0px;
   font-size: 1em;
   color: #333;
 }
 
-/* ✅ 중첩 리스트(`ol > ol`)에도 적용 */
+/* ✅ 중첩 리스트(`ol > ol`) - 이 부분은 기존 로직 유지 */
 .notion-list-numbered > ol {
-  counter-reset: sub-counter; /* 중첩 리스트 초기화 */
+  counter-reset: sub-counter; 
 }
 
 .notion-list-numbered > ol > li {
@@ -900,34 +897,35 @@
 }
 
 .notion-list-numbered > ol > li::before {
-  content: counter(sub-counter) "."; /* 중첩 리스트 넘버링 */
+  content: counter(sub-counter, decimal) ".";
 }
 
 
 .notion-list-disc {
   list-style-type: none;
+  padding-inline-start: 1em;
 }
 
 .notion-list-disc li {
   position: relative;
-  padding-left: 24px;
+  padding-left: 1em;
 }
 /* 1단계: ● (채워진 동그라미) */
 .notion-list-disc > li::before {
   content: "●"; /* 채워진 동그라미 */
   position: absolute;
   left: -8px;
-  top: 7px;
-  font-size: .5em;
+  top: 9px;
+  font-size: .4em;
   color: var(--fg-color);
   padding-left: 8px;
 }
 
 /* 2단계: ○ (빈 동그라미) */
 .notion-list-disc > ul > li::before {
-  content: "○"; /* 채워진 연한 동그라미 */
+  content: "●"; /* 채워진 연한 동그라미 */
   position: absolute;
-  color: var(--fg-color);
+  color: var(--fg-color-2);
 }
 
 /* 3단계: ■ (네모) */
