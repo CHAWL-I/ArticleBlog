@@ -640,14 +640,24 @@
   );
 }
 
-.notion-blue_background,
-.notion-gray_background {
+.notion-blue_background {
   /* light blue */
   background-image: linear-gradient(
     90deg,
     var(--bg-color),
     #adedfc 2px,
     #adebfd 25%,
+    var(--bg-color)
+  );
+}
+
+.notion-gray_background {
+  /* light blue */
+  background-image: linear-gradient(
+    90deg,
+    var(--bg-color),
+    #f0f0f0 2px,
+    #f0f0f0 25%,
     var(--bg-color)
   );
 }
@@ -689,17 +699,37 @@
 /* disable highlighting in dark mode */
 .dark-mode .notion-red_background,
 .dark-mode .notion-pink_background,
-.dark-mode .notion-blue_background,
 .dark-mode .notion-purple_background,
 .dark-mode .notion-teal_background,
 .dark-mode .notion-yellow_background,
 .dark-mode .notion-orange_background,
-.dark-mode .notion-brown_background,
-.dark-mode .notion-gray_background {
+.dark-mode .notion-brown_background {
   padding: 0;
   margin: 0;
   border-radius: 0;
   background: none !important;
+}
+
+.dark-mode .notion-blue_background {
+  /* dark blue */
+  background-image: linear-gradient(
+    90deg,
+    var(--bg-color),
+    #00466d 2px,
+    #00466d 25%,
+    var(--bg-color)
+  );
+}
+
+.dark-mode .notion-gray_background {
+  /* dark blue */
+  background-image: linear-gradient(
+    90deg,
+    var(--bg-color),
+    #161617 2px,
+    #1b1b1d 25%,
+    var(--bg-color)
+  );
 }
 
  .dark-mode {
@@ -965,7 +995,7 @@
   left: 0;
   width: 100%;
   justify-self: center; /* ✅ 중앙 정렬 */
-  height: calc(1.8 * var(--notion-header-height)); /* 헤더 높이의 2배 */
+  height: calc(2 * var(--notion-header-height)); /* 헤더 높이의 2배 */
   background: var(--bg-color); /* 반투명 배경 */
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.04);
   z-index: 800; /* ✅ 헤더보다 낮은 z-index (헤더가 위에 오도록) */
@@ -1033,11 +1063,27 @@ nav.top-toc:empty {
 .notion-aside {
   position: sticky !important;
   background-color: var(--bg-color);
+  border-radius: 0px;
 }
 
 .notion-aside-table-of-contents {
   width: 224px;
   max-width: 224px;
+  max-height: 65vh !important; /*목차 최대 높이를 화면 높이의 70%로 제한*/
+  scrollbar-width: thin;
+  border-radius: 0px;
+
+  /*상하단 그라데이션 효과*/
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 3%,
+    black 5%,
+    black 95%,
+    transparent 97%
+  );
+
+  /* 스크롤바가 마스크를 가리지 않도록 약간의 패딩 추가 */
+  padding: 16px 0;
 }
 
 .notion-aside-table-of-contents-header {
@@ -1218,36 +1264,38 @@ nav.top-toc:empty {
 }
 
 /* 📌 1024px 이하에서는 TOC 보이기 */
-@media (max-width: 1100px) {
-  .top-toc {
+/* 📌 [통합 정리] 1100px 미만: 사이드바 숨기고 상단 TOC 보이기 */
+@media (max-width: 1099px) {
+  .notion-aside {
+    display: none !important;
+  }
+  .notion-top-toc, .top-toc {
     display: block !important;
   }
-}
-
-/* 📌 768px 이하 (모바일) */
-@media (max-width: 768px) {
   .notion-page-content {
     flex-direction: column;
     align-items: center;
-    padding: 8px;
   }
-
   .notion-page-content-inner {
-    max-width: 100%;
-  }
-
-  .notion-aside {
-    display: none;
+    width: 100%;
+    max-width: 100%; /* 화면 꽉 차게 조절 */
   }
 }
 
-/* 📌 768px 이상 (데스크탑) */
-@media (min-width: 768px) {
+/* 📌 [통합 정리] 1100px 이상: 사이드바 보이고 상단 TOC 숨기기 */
+@media (min-width: 1100px) {
   .notion-aside {
-    display: block;
+    display: flex !important; /* 사이드바 활성화 */
   }
-
-  .top-toc {
-    display: none;
+  .notion-top-toc, .top-toc {
+    display: none !important; /* 상단 TOC 비활성화 */
+  }
+  .notion-page-content {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .notion-page-content-inner {
+    /* 사이드바 너비만큼 제외하고 본문 영역 확보 */
+    max-width: calc(100% - 288px); 
   }
 }
