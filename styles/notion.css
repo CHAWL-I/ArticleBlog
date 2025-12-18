@@ -64,7 +64,13 @@
 }
 
 .notion-asset-caption {
-  text-align: center;
+  text-align: right;
+  padding: 2px;
+  font-size: 12px;
+}
+
+.dark-mode .notion-asset-caption {
+  color: rgba(255,255,255,0.4);
 }
 
 .notion-asset-wrapper {
@@ -913,7 +919,7 @@
   left: -2px;
   top: 0px;
   font-size: 1em;
-  color: #333;
+  color: var(--fg-color);
 }
 
 /* ✅ 중첩 리스트(`ol > ol`) - 이 부분은 기존 로직 유지 */
@@ -950,16 +956,20 @@
   padding-left: 8px;
 }
 
-/* 2단계: ○ (빈 동그라미) */
+/* 2단계: ○ (연한 동그라미) */
 .notion-list-disc > ul > li::before {
   content: "●"; /* 채워진 연한 동그라미 */
   position: absolute;
   color: var(--fg-color-2);
 }
 
+.dark-mode .notion-list-disc > ul > li::before {
+  color: rgba(255,255,255,0.35) !important;
+}
+
 /* 3단계: ■ (네모) */
 .notion-list-disc > ul > ul > li::before {
-  content: "■" !important; /* 빈 동그라미 */
+  content: "■" !important; /* 진한 네모 */
   position: absolute;
   color: var(--fg-color);
 }
