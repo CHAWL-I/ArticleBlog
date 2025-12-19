@@ -2,8 +2,8 @@ import { type GetStaticProps } from 'next'
 
 import { NotionPage } from '@/components/NotionPage'
 import TableOfContents from "@/components/TableOfContents"; // ✅ TOC 컴포넌트 가져오기
-import { domain } from '@/lib/config'
-//import { getSiteMap } from '@/lib/get-site-map'
+import { domain, isDev } from '@/lib/config'
+import { getSiteMap } from '@/lib/get-site-map'
 import { resolveNotionPage } from '@/lib/resolve-notion-page'
 import { type PageProps, type Params } from '@/lib/types'
 
@@ -25,7 +25,7 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (
   }
 }
 
-/*export async function getStaticPaths() {
+export async function getStaticPaths() {
   if (isDev) {
     return {
       paths: [],
@@ -47,9 +47,9 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (
 
   console.log(staticPaths.paths)
   return staticPaths
-}*/
+}
 
-export async function getStaticPaths() {
+/*export async function getStaticPaths() {
   // 1. 빌드 시 모든 페이지 주소를 계산(getSiteMap)하지 않도록 설정합니다.
   // 2. paths를 빈 배열([])로 두면 빌드 시간이 획기적으로 줄어듭니다.
   // 3. fallback을 'blocking'으로 설정하면, 사용자가 접속하는 순간 노션에서 데이터를 가져옵니다.
@@ -58,7 +58,7 @@ export async function getStaticPaths() {
     paths: [],
     fallback: 'blocking' 
   }
-}
+}*/
 
 export default function NotionDomainDynamicPage(props) {
   return (
