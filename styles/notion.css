@@ -77,9 +77,15 @@
 /* ✅ 아이콘이 없는 페이지에만 적용 */
 .notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
 .notion-title {
-  font-size: 6em;
-  text-align: left;
-  padding: 0 0 0 12px;
+  font-size: clamp(6rem, 10vw, 6rem) !important;
+  /*height: 128px;*/
+  text-align: right;
+  padding: 0 8px 0 0;
+  letter-spacing: -0.03em;
+  /*우측 공간 강제로 비우기 위한 최대 너비 제한*/
+  line-height: 1 !important;
+  margin-bottom: 0 !important;
+  margin-top: 32px !important;
 }
 
 .notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
@@ -92,7 +98,7 @@
   max-width: 1100px;
   width: 100%;
   margin: 0 auto;
-  padding: 16px;
+  padding: 0 16px 64px 16px;
   box-sizing: border-box;
 }
 
@@ -506,8 +512,14 @@
 }
 
 .notion-callout {
-  margin: 0.75em 0;
+  margin: 0;
   border-radius: 16px;
+}
+
+.notion-callout.notion-blue_co {
+  padding: 0;
+  margin: 0;
+  border: 0;
 }
 
 /* ✅ 1. 파란색 콜아웃 내부 텍스트 영역을 강제 가로 정렬(Flex) */
@@ -517,6 +529,9 @@
   flex-wrap: wrap !important;    /* 공간 부족 시 줄바꿈 */
   gap: 0.3rem 0.6rem !important;          /* 요소 사이 간격 */
   width: 100% !important;
+  margin-bottom: 64px;
+  font-size: 2rem;
+  justify-content: right;
 }
 
 /* ✅ 2. 링크를 감싸는 개별 블록(.notion-text)의 너비를 최소화 */
@@ -658,7 +673,7 @@
   position: relative;
   transition: unset;
   opacity: 1;
-  border-bottom-width: 0.1rem;
+  border-bottom: 0;
   background: transparent;
   background-origin: border-box;
   background-repeat: no-repeat;
@@ -832,7 +847,8 @@
   z-index: 2000; /* 헤더가 가장 위로 */
   font-size: 1em;
   font-weight: 500;
-  background: hsla(0, 0%, 100%, 0.8);
+  /*background: hsla(0, 0%, 100%, 0.8); 투명도 있는 배경*/
+  background: var(--bg-color);
   backdrop-filter: saturate(180%) blur(16px);
   margin: 0 auto; /* ✅ 가운데 정렬 */
   display: flex; /* ✅ Flexbox를 사용하여 내부 요소 정렬 */
