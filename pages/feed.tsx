@@ -23,15 +23,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 
   const siteMap = await getSiteMap()
-  const ttlMinutes = 24 * 60 // 24 hours
-  // const ttlSeconds = ttlMinutes * 60
+  //const ttlMinutes = 24 * 60 // 24 hours
 
   const feed = new RSS({
     title: config.name,
     site_url: config.host,
     feed_url: `${config.host}/feed.xml`,
     language: config.language,
-    ttl: ttlMinutes
+    //ttl: ttlMinutes
   })
 
   for (const pagePath of Object.keys(siteMap.canonicalPageMap)) {
