@@ -2,7 +2,7 @@ import { type GetStaticProps } from 'next'
 
 import { NotionPage } from '@/components/NotionPage'
 import TableOfContents from "@/components/TableOfContents"; // ✅ TOC 컴포넌트 가져오기
-//import { domain, isDev } from '@/lib/config'
+import { domain } from '@/lib/config'
 //import { getSiteMap } from '@/lib/get-site-map'
 import { resolveNotionPage } from '@/lib/resolve-notion-page'
 import { type PageProps, type Params } from '@/lib/types'
