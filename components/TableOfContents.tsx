@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 export default function TableOfContents() {
-  console.log("📌 TableOfContents 컴포넌트 실행됨");
+  /*console.log("📌 TableOfContents 컴포넌트 실행됨");*/
 
   const [headings, setHeadings] = useState<{ id: string; text: string; level: number; fullPath: string }[]>([]);
   const [activeIndex, setActiveIndex] = useState<number>(-1); // ✅ -1은 "목차 없음" 상태
@@ -12,14 +12,11 @@ export default function TableOfContents() {
   useEffect(() => {
     if (typeof window === "undefined") return; // ✅ 서버 환경에서는 실행하지 않음
 
-    console.log("⏳ useEffect 실행됨");
-
     const moveTOCToContent = () => {
       const targetParent = document.querySelector(".notion-page-scroller");
       const tocElement = document.querySelector(".top-toc");
 
       if (targetParent && tocElement && tocElement.parentElement !== targetParent) {
-        console.log("✅ top-toc 요소를 찾음, notion-page 내부로 이동");
         targetParent.prepend(tocElement);
         return true;
       }
@@ -28,7 +25,7 @@ export default function TableOfContents() {
 
     // ✅ `notion-page-content`가 생성될 때까지 확인
     const interval = setInterval(() => {
-      console.log("🔄 notion-page-content가 렌더링될 때까지 대기 중...");
+      //console.log("🔄 notion-page-content가 렌더링될 때까지 대기 중...");
       if (moveTOCToContent()) {
         clearInterval(interval);
       }
@@ -38,14 +35,11 @@ export default function TableOfContents() {
     const waitForNotionContentInner = setInterval(() => {
       const notionPageContentInner = document.querySelector(".notion-page-content-inner");
       if (notionPageContentInner) {
-        console.log("✅ .notion-page-content-inner 요소 감지됨! MutationObserver 설정 시작");
 
         // ✅ MutationObserver로 `notion-page-content-inner` 내부 감시
         const updateHeadings = () => {
-          console.log("🔄 목차 업데이트 실행");
+          //console.log("🔄 목차 업데이트 실행");
           const headingElements = Array.from(notionPageContentInner.querySelectorAll(".notion-h, .notion-h1, .notion-h2, .notion-h3, .notion-h4"));
-
-          console.log("📌 찾은 목차 목록:", headingElements);
 
           if (headingElements.length > 0) {
             let hierarchy: { id: string; text: string; level: number }[] = [];
@@ -70,8 +64,6 @@ export default function TableOfContents() {
   })
   .filter(Boolean) as { id: string; text: string; level: number; fullPath: string }[];
 
-console.log("📌 업데이트된 headings:", newHeadings);
-
 
             setHeadings(newHeadings);
           } else {
@@ -80,7 +72,7 @@ console.log("📌 업데이트된 headings:", newHeadings);
         };
 
         const observer = new MutationObserver(() => {
-          console.log("🔄 DOM 변경 감지됨! (목차 업데이트 실행)");
+          //console.log("🔄 DOM 변경 감지 (목차 업데이트 실행)");
           updateHeadings();
         });
 
@@ -129,7 +121,6 @@ console.log("📌 업데이트된 headings:", newHeadings);
         const tocTop = tocElement.getBoundingClientRect().bottom;
         const sections = document.querySelectorAll(".notion-h, .notion-h1, .notion-h2, .notion-h3, .notion-h4");
 
-        console.log("🔎 감지된 섹션 개수:", sections.length);
         if (sections.length === 0) {
           ticking = false;
           return;
@@ -141,9 +132,7 @@ console.log("📌 업데이트된 headings:", newHeadings);
         for (const [index, section] of Array.from(sections).entries()) {
             const sectionBottom = section.getBoundingClientRect().bottom;
             const distance = Math.abs(sectionBottom - tocTop);
-          
-            console.log(`🔹 섹션 ${index}: bottom=${sectionBottom}, distance=${distance}`);
-          
+                    
             // ✅ `top-toc`보다 위에 있는 섹션만 고려
             if (sectionBottom < tocTop && distance < minDistance) {
               closestSectionIndex = index;
@@ -153,7 +142,7 @@ console.log("📌 업데이트된 headings:", newHeadings);
   
         const newActiveIndex = closestSectionIndex !== -1 ? closestSectionIndex : -1;
 
-        console.log("🎯 최종 감지된 인덱스:", newActiveIndex);
+        //console.log("🎯 최종 감지된 인덱스:", newActiveIndex);
 
         if (newActiveIndex !== activeIndex) {
           console.log("✅ 현재 활성화된 섹션 변경됨:", newActiveIndex);
