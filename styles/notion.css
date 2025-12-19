@@ -351,7 +351,7 @@
 }
 
 .notion-page-content-inner .notion-gallery-grid {
-  grid-template-columns: repeat(auto-fit, minmax(256px,1fr));
+  grid-template-columns: repeat(auto-fill, minmax(256px,1fr));
   max-width: 100%; /* ✅ notion-page-content-inner에 맞춤 */
   gap: 3vmin;
   row-gap: 5vmin;
@@ -390,6 +390,7 @@
   padding: 0; /* ✅ 패딩 제거 */
   box-sizing: border-box; /* ✅ 패딩/보더 포함 */
   align-items: center;
+  color: var(--fg-color-2);
 }
 
 .notion-property-multi_select-item {
@@ -415,7 +416,6 @@
   border-radius: 16px; /* 🔹 모서리 둥글게 */
   object-fit: contain; /* 🔹 이미지 비율 유지 */
   transition: all 0.3s ease-in-out;
-  background-color: rgb(255, 255, 255);
 }
 
 .notion-collection-card {
@@ -426,6 +426,7 @@
 .notion-collection-card-cover {
   border-radius: 16px;
   box-shadow: 0px 0px 3px 3px rgba(15, 15, 15, 0.06);
+  background-color: rgb(255, 255, 255, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -434,6 +435,11 @@
   height: 200px !important;
   transition: all 0.3s ease-in-out;
 }
+
+.dark-mode .notion-collection-card-cover {
+  background-color: rgb(26, 27, 29) !important;
+}
+
 
 .notion-collection-card-cover {
   border-bottom: 0 none;
@@ -449,8 +455,8 @@
 }
 
 .notion-collection-card-size-small .notion-collection-card-cover {
-  width: 100%;
-  aspect-ratio: 1/1; /* ✅ 1:1 비율 유지 */
+  height: auto !important;
+  aspect-ratio: 16/9; /* ✅ 16:9 비율 유지 */
   border-radius: 12px; /* 🔹 모서리 둥글게 */
   object-fit: contain; /* 🔹 이미지 비율 유지 */
   transition: all 0.3s ease-in-out;
@@ -537,7 +543,7 @@
   border-radius: 32px !important;  /* 둥근 버튼 모양 */
   font-size: 0.85rem;
   background-color: var(--select-color-0);
-  box-shadow: inset 0 0.2rem 0 0 var(--fg-color-1);
+  box-shadow: inset 0 0.2rem 0 0 rgba(55, 53, 47, 0.3);
   color: var(--bg-color) !important;
   transition: all 0.2s ease;
   margin: 4px 0 !important;
