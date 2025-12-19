@@ -76,6 +76,13 @@
 
 /* ✅ 아이콘이 없는 페이지에만 적용 */
 .notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
+.notion-title {
+  font-size: 6em;
+  text-align: left;
+  padding: 0 0 0 12px;
+}
+
+.notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
 .notion-page-content {
   display: flex;
   flex-direction: row;

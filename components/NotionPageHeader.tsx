@@ -16,7 +16,7 @@ export function NotionPageHeader({
   const fixedPages = [
     { pageId: '2cdf3422532d80bda8a7dd80223460d0', title: 'HOME', category: 'home' },
     { pageId: '19ff3422532d8077b9a8c28bf15c1395', title: 'ABOUT ME', category: 'about me' },
-    { pageId: '19ff3422532d8046b758d593a45594a5', title: 'PORTFOLIO', category: 'portfolio' },
+    { pageId: '19ff3422532d8046b758d593a45594a5', title: 'PROJECT', category: 'project' },
     { pageId: '19ff3422532d80b6b991e9459ddd4927', title: 'BLOG', category: 'blog' }
   ];
 

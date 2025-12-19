@@ -22,7 +22,7 @@ import {
   posthogId
 } from '@/lib/config'
 
-import TagTab from '../components/TagTab';
+/*import TagTab from '../components/TagTab';*/
 
 if (!isServer) {
   bootstrap()
@@ -68,7 +68,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <TagTab /> {/* TagTab 렌더링 */}
       <main>
         <Component {...pageProps} />
       </main>
