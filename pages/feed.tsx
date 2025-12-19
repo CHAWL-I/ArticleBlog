@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   const siteMap = await getSiteMap()
   const ttlMinutes = 24 * 60 // 24 hours
-  const ttlSeconds = ttlMinutes * 60
+  const _ttlSeconds = ttlMinutes * 60
 
   const feed = new RSS({
     title: config.name,
