@@ -15,7 +15,7 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (
   try {
     const props = await resolveNotionPage(domain, rawPageId)
 
-    return { props /*revalidate: 10*/ }
+    return { props }
   } catch (err) {
     console.error('page error', domain, rawPageId, err)
 
@@ -26,12 +26,12 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (
 }
 
 export async function getStaticPaths() {
-  if (isDev) {
+  /*if (isDev) {
     return {
       paths: [],
       fallback: false
     }
-  }
+  }*/
 
   const siteMap = await getSiteMap()
 
@@ -42,10 +42,12 @@ export async function getStaticPaths() {
       }
     })),
     // paths: [],
+    // ✅ 정적 배포에서는 반드시 false여야 하며, 
+    // 위 paths에 모든 페이지 ID가 포함되어 있어야 합니다.
     fallback: false
   }
 
-  console.log(staticPaths.paths)
+  console.log(`빌드 대상 페이지 개수: ${staticPaths.paths.length}`)
   return staticPaths
 }
 
