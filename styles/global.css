@@ -16,8 +16,7 @@ html {
 
 /*폰트 임포트*/
 /* 폰트 등록 */
-@import url('/public/fonts/Spoqa Han Sans Neo.css');
-
+@import url('/fonts/Spoqa Han Sans Neo.css');
 
 /* 🔹 전역 폰트 변수 설정 */
 :root {
