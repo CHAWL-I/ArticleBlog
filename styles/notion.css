@@ -400,6 +400,10 @@
   margin-top: 4px;
 }
 
+.notion-collection-header {
+  display: none;
+}
+
 .notion-collection-card {
   border-radius: 16px;
   box-shadow: none;
@@ -486,6 +490,62 @@
 
 .notion-callout {
   margin: 0.75em 0;
+  border-radius: 16px;
+}
+
+/* ✅ 1. 파란색 콜아웃 내부 텍스트 영역을 강제 가로 정렬(Flex) */
+.notion-callout.notion-blue_co .notion-callout-text {
+  display: flex !important;
+  flex-direction: row !important; /* 가로 방향 강제 */
+  flex-wrap: wrap !important;    /* 공간 부족 시 줄바꿈 */
+  gap: 0.3rem 0.6rem !important;          /* 요소 사이 간격 */
+  width: 100% !important;
+}
+
+/* ✅ 2. 링크를 감싸는 개별 블록(.notion-text)의 너비를 최소화 */
+.notion-callout.notion-blue_co .notion-callout-text > .notion-text {
+  display: inline-flex !important; /* 블록 속성 제거 */
+  width: auto !important;          /* 가로 100% 차지 방지 */
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--select-color-0);
+}
+
+.notion-callout-text .notion-link {
+  display: inline-flex !important;
+  width: auto !important;
+  padding: 0.4rem 0.9rem !important;
+  border: 2px solid var(--select-color-0) !important;
+  border-radius: 32px !important;
+  font-size: 0.85rem;
+  background-color: transparent;
+  margin: 4px 0 !important;
+  white-space: nowrap !important;
+  
+  /* 📌 물리적 연출을 위한 필수 속성 */
+  position: relative;
+  top: 0;
+  transition: all 0.1s ease; /* 반응 속도를 짧게 유지 */
+  cursor: pointer;
+}
+
+.notion-callout-text .notion-link-selected {
+  display: inline-flex !important;
+  width: auto !important;
+  padding: 0.4rem 0.9rem !important;    /* 버튼 내부 여백 */
+  border: 2px solid var(--select-color-0); /* 테두리 추가 */
+  border-radius: 32px !important;  /* 둥근 버튼 모양 */
+  font-size: 0.85rem;
+  background-color: var(--select-color-0);
+  box-shadow: inset 0 0.2rem 0 0 var(--fg-color-1);
+  color: var(--bg-color) !important;
+  transition: all 0.2s ease;
+  margin: 4px 0 !important;
+  white-space: nowrap !important; /* 텍스트가 버튼 안에서 줄바꿈되지 않게 */
+}
+
+.notion-page-icon-inline {
+  display: none !important; /* 콜아웃 내부 링크 아이콘 제거*/
 }
 
 .notion-hr {
@@ -589,17 +649,16 @@
   background-size: 0 0.1rem;
 }
 
-.notion-link:focus,
-.notion-link:hover {
-  border-bottom-color: transparent;
-
-  background-image: linear-gradient(90.68deg, #b439df 0.26%, #e5337e 102.37%);
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 100% 0.1rem;
-
-  transition-property: background-position, background-size;
-  transition-duration: 300ms;
+/* ✅ 2. 버튼이 눌리는 순간 (Active) - 물리적 딸깍! */
+.notion-callout.notion-blue_co .notion-link:active {
+  /* 실제로 버튼이 바닥에 닿는 것처럼 좌표 이동 */
+  top: 2px !important; 
+  /* 눌리는 그림자 */
+  box-shadow: inset 0 0.2rem 0 0 var(--fg-color-1);
+  /* 클릭 시 색상 반전으로 확실한 피드백 */
+  background-color: var(--select-color-1) !important;
+  color: var(--select-color-0) !important;
+  transition: all 0.05s; /* 누를 때는 더 즉각적인 반응 */
 }
 
 .notion b {
