@@ -397,8 +397,13 @@
   font-size: 0.85rem;
   padding: 8px;
   height: 1.33rem;
-  border-radius: 3px;
+  border-radius: 8px;
   margin-top: 4px;
+}
+
+/* 카드 내 태그 중 색상 없는 빈 정보값 숨김처리*/
+.notion-property-multi_select-item:not([class*="notion-item-"]) {
+  display: none !important;
 }
 
 .notion-collection-header {
@@ -412,8 +417,7 @@
 
 .notion-collection-card-cover img {
   width: 100%;
-  aspect-ratio: 1/1; /* ✅ 1:1 비율 유지 */
-  border-radius: 16px; /* 🔹 모서리 둥글게 */
+  height: 100%;
   object-fit: contain; /* 🔹 이미지 비율 유지 */
   transition: all 0.3s ease-in-out;
 }
@@ -437,7 +441,7 @@
 }
 
 .dark-mode .notion-collection-card-cover {
-  background-color: rgb(26, 27, 29) !important;
+  background-color: rgb(17, 18, 22) !important;
 }
 
 
