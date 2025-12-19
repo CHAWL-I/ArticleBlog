@@ -86,10 +86,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   const feedText = feed.xml({ indent: true })
 
-  res.setHeader(
+  /*res.setHeader(
     'Cache-Control',
     `public, max-age=${ttlSeconds}, stale-while-revalidate=${ttlSeconds}`
-  )
+  )*/
   res.setHeader('Content-Type', 'text/xml; charset=utf-8')
   res.write(feedText)
   res.end()
