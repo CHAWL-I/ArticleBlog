@@ -26,11 +26,11 @@ import { Footer } from './Footer'
 import { GitHubShareButton } from './GitHubShareButton'
 import { Loading } from './Loading'
 import { NotionPageHeader } from './NotionPageHeader'
-import { TagLink } from './TagLink'
 import { Page404 } from './Page404'
 import { PageAside } from './PageAside'
 import { PageHead } from './PageHead'
 import styles from './styles.module.css'
+import { TagLink } from './TagLink'
 
 // -----------------------------------------------------------------------------
 // dynamic imports for optional components

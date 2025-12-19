@@ -1,10 +1,10 @@
-import React from 'react'
 import { useRouter } from 'next/router'
+import React from 'react'
 import { useNotionContext } from 'react-notion-x'
 
-export const TagLink = ({ href, children, ...props }: any) => {
+export function TagLink({ href, children, ...props }: any) {
   const router = useRouter()
-  const { mapPageUrl } = useNotionContext()
+  //const { mapPageUrl } = useNotionContext()
   
   // 1. 현재 브라우저의 경로 (ID만 추출)
   const currentPath = router.asPath.split('?')[0]
