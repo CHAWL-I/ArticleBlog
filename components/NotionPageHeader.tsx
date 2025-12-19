@@ -72,15 +72,20 @@ export function NotionPageHeader({
     return pathMatch || categoryMatch;
   };
 
+  // 이동 경로 생성 함수 (절대 경로 '/' 추가가 핵심)
+  const getDestination = (pageId: string) => {
+    const slug = navigationMap[pageId];
+    // 매핑된 슬러그가 있으면 '/slug'로, 없으면 기존 mapPageUrl 사용
+    return slug !== undefined ? `/${slug}` : mapPageUrl(pageId);
+  };
+
   return (
     <header className="notion-header">
       <div className="notion-nav-header">
-        {/* 📌 1. 데스크톱 메뉴 (desktop-only) */}
         <nav className="notion-custom-nav">
           {fixedPages.map((link, index) => (
             <components.PageLink
-              // ✅ 여기 수정: navigationMap에 있으면 영문 슬러그, 없으면 mapPageUrl
-              href={navigationMap[link.pageId] ? `/${navigationMap[link.pageId]}` : mapPageUrl(link.pageId)}
+              href={getDestination(link.pageId)} // ✅ 데스크톱 적용
               key={index}
               className={`breadcrumb button ${
                 isActive(link.pageId, link.category) ? 'selected' : ''
@@ -91,8 +96,20 @@ export function NotionPageHeader({
           ))}
         </nav>
 
-        {/* 📌 오른쪽: 검색 및 햄버거 메뉴 생략 */}
-        <div className="notion-nav-header-rhs">...</div>
+        {/* 📌 오른쪽: 검색 및 햄버거 메뉴 */}
+        <div className="notion-nav-header-rhs">
+          {isSearchEnabled && <Search block={block} title={null} />}
+
+          {/* 📌 햄버거 버튼 */}
+          <button
+            className={`hamburger-btn ${isMobileMenuOpen ? 'open' : ''}`}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+          </button>
+        </div>
 
         {/* 📌 2. 모바일 메뉴 (mobile-nav) */}
         <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
@@ -101,7 +118,7 @@ export function NotionPageHeader({
             .map((link, index) => (
               <components.PageLink
                 // ✅ 중요: 여기도 똑같이 수정해줘야 모바일/상세페이지에서 누를 때 404가 안 납니다!
-                href={navigationMap[link.pageId] ? `/${navigationMap[link.pageId]}` : mapPageUrl(link.pageId)}
+                href={getDestination(link.pageId)} // ✅ 모바일 메뉴도 영문 주소 강제 적용
                 key={index}
                 className={`breadcrumb button ${isActive(link.pageId, link.category) ? 'selected' : ''}`}
               >
