@@ -7,8 +7,13 @@ const withBundleAnalyzer = bundleAnalyzer({
 })
 
 export default withBundleAnalyzer({
+  // 1. 정적 배포를 위한 핵심 설정 추가
+  output: 'export', 
+  
   staticPageGenerationTimeout: 300,
   images: {
+    // 2. 정적 배포(export) 시에는 Next.js 자체 이미지 최적화 기능을 쓸 수 없으므로 비활성화합니다.
+    unoptimized: true, 
     remotePatterns: [
       { protocol: 'https', hostname: 'www.notion.so' },
       { protocol: 'https', hostname: 'notion.so' },
@@ -23,9 +28,6 @@ export default withBundleAnalyzer({
   },
 
   webpack: (config, _context) => {
-    // Workaround for ensuring that `react` and `react-dom` resolve correctly
-    // when using a locally-linked version of `react-notion-x`.
-    // @see https://github.com/vercel/next.js/issues/50391
     const dirname = path.dirname(fileURLToPath(import.meta.url))
     config.resolve.alias.react = path.resolve(dirname, 'node_modules/react')
     config.resolve.alias['react-dom'] = path.resolve(
@@ -35,6 +37,5 @@ export default withBundleAnalyzer({
     return config
   },
 
-  // See https://react-tweet.vercel.app/next#troubleshooting
   transpilePackages: ['react-tweet']
 })
