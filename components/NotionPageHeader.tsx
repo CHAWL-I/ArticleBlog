@@ -13,8 +13,8 @@ export function NotionPageHeader({
   const { components, mapPageUrl, recordMap } = useNotionContext();
   const router = useRouter();
 
-  // 숫자와 영어를 강제로 짝지어서 제시.
-  const navigationMap = {
+  // 숫자와 영어를 강제로 짝지어서 제시.  절대 경로 - 상대 경로 꼬이지 않아야.
+  const navigationMap: Record<string, string> = {
     '19ff3422532d8077b9a8c28bf15c1395': 'about-me',
     '19ff3422532d8046b758d593a45594a5': 'project',
     '19ff3422532d80b6b991e9459ddd4927': 'blog'
@@ -75,10 +75,11 @@ export function NotionPageHeader({
   return (
     <header className="notion-header">
       <div className="notion-nav-header">
-        {/* 📌 HOME은 항상 표시 */}
+        {/* 📌 1. 데스크톱 메뉴 (desktop-only) */}
         <nav className="notion-custom-nav">
           {fixedPages.map((link, index) => (
             <components.PageLink
+              // ✅ 여기 수정: navigationMap에 있으면 영문 슬러그, 없으면 mapPageUrl
               href={navigationMap[link.pageId] ? `/${navigationMap[link.pageId]}` : mapPageUrl(link.pageId)}
               key={index}
               className={`breadcrumb button ${
@@ -90,28 +91,17 @@ export function NotionPageHeader({
           ))}
         </nav>
 
-        {/* 📌 오른쪽: 검색 및 햄버거 메뉴 */}
-        <div className="notion-nav-header-rhs">
-          {isSearchEnabled && <Search block={block} title={null} />}
+        {/* 📌 오른쪽: 검색 및 햄버거 메뉴 생략 */}
+        <div className="notion-nav-header-rhs">...</div>
 
-          {/* 📌 햄버거 버튼 */}
-          <button
-            className={`hamburger-btn ${isMobileMenuOpen ? 'open' : ''}`}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-          </button>
-        </div>
-
-        {/* 📌 모바일 메뉴 */}
+        {/* 📌 2. 모바일 메뉴 (mobile-nav) */}
         <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
           {fixedPages
             .filter(link => link.title !== 'HOME')
             .map((link, index) => (
               <components.PageLink
-                href={mapPageUrl(link.pageId)}
+                // ✅ 중요: 여기도 똑같이 수정해줘야 모바일/상세페이지에서 누를 때 404가 안 납니다!
+                href={navigationMap[link.pageId] ? `/${navigationMap[link.pageId]}` : mapPageUrl(link.pageId)}
                 key={index}
                 className={`breadcrumb button ${isActive(link.pageId, link.category) ? 'selected' : ''}`}
               >
