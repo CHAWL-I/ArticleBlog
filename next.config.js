@@ -9,6 +9,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 export default withBundleAnalyzer({
   // 1. 정적 배포를 위한 핵심 설정 추가
   output: 'export', 
+  trailingSlash: true, // 주소 끝에 /를 붙여 폴더 구조로 생성함
 
   // ✅ 이 부분을 추가하면 "안 쓰는 변수" 에러가 있어도 무시하고 배포합니다.
   eslint: {
