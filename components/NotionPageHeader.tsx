@@ -13,11 +13,18 @@ export function NotionPageHeader({
   const { components, mapPageUrl, recordMap } = useNotionContext();
   const router = useRouter();
 
+  // 숫자와 영어를 강제로 짝지어서 제시.
+  const navigationMap = {
+    '19ff3422532d8077b9a8c28bf15c1395': 'about-me',
+    '19ff3422532d8046b758d593a45594a5': 'project',
+    '19ff3422532d80b6b991e9459ddd4927': 'blog'
+  };
+
   const fixedPages = [
     { pageId: '2cdf3422532d80bda8a7dd80223460d0', title: 'HOME', category: 'home' },
-    { pageId: '/about-me', title: 'ABOUT ME', category: 'about-me' },
-    { pageId: '/project', title: 'PROJECT', category: 'project' },
-    { pageId: '/blog', title: 'BLOG', category: 'blog' }
+    { pageId: '19ff3422532d8077b9a8c28bf15c1395', title: 'ABOUT ME', category: 'about-me' },
+    { pageId: '19ff3422532d8046b758d593a45594a5', title: 'PROJECT', category: 'project' },
+    { pageId: '19ff3422532d80b6b991e9459ddd4927', title: 'BLOG', category: 'blog' }
   ];
 
   const [currentCategories, setCurrentCategories] = useState<string[]>([]);
@@ -72,7 +79,7 @@ export function NotionPageHeader({
         <nav className="notion-custom-nav">
           {fixedPages.map((link, index) => (
             <components.PageLink
-              href={mapPageUrl(link.pageId)}
+              href={navigationMap[link.pageId] ? `/${navigationMap[link.pageId]}` : mapPageUrl(link.pageId)}
               key={index}
               className={`breadcrumb button ${
                 isActive(link.pageId, link.category) ? 'selected' : ''
