@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function TableOfContents() {
   /*console.log("📌 TableOfContents 컴포넌트 실행됨");*/
@@ -7,7 +7,15 @@ export default function TableOfContents() {
   const [activeIndex, setActiveIndex] = useState<number>(-1); // ✅ -1은 "목차 없음" 상태
   const [previousScrollY] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true); // ✅ top-toc 표시 여부
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // 토글버튼 판단
+  const dropdownRef = useRef(null); // 드롭다운 영역 파악
+  const activeItemRef = useRef(null); // 현재 위치의 해당하는 항목
+  const [pageTitle, setPageTitle] = useState(""); // ✅ SSR 에러 방지용 상태
 
+  // 1. 클라이언트 사이드 전용 초기화 (document 에러 해결)
+  useEffect(() => {
+    setPageTitle(document.title); // ✅ 브라우저에서만 실행되도록 보장
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return; // ✅ 서버 환경에서는 실행하지 않음
@@ -58,6 +66,7 @@ export default function TableOfContents() {
     hierarchy = hierarchy.filter((h) => h.level < level); // 상위 계층 정리
     hierarchy.push({ id, text, level });
 
+    // 부모 경로 추출 (현재 제목을 넣기 전의 hierarchy 상태)
     const fullPath = hierarchy.map((h) => h.text).join(" / "); // "h1 / h2 / h3" 형태로 변환
 
     return { id, text, level, fullPath };
@@ -167,27 +176,103 @@ export default function TableOfContents() {
     };
   }, [headings, activeIndex, previousScrollY]);
 
+  // ✅ [중요] 외부 클릭 감지용 useEffect (새로 추가)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // 드롭다운이 열려 있을 때만 동작하며, 클릭된 곳이 dropdownRef(nav 전체) 밖이라면 닫음
+      if (isMenuOpen && dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    // 전역(window)에 클릭 이벤트 등록
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    // 컴포넌트가 사라질 때 이벤트 리스너도 깨끗하게 청소 (메모리 누수 방지)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]); // isMenuOpen 상태가 바뀔 때마다 리스너 상태 업데이트
+
+  useEffect(() => {
+    if (isMenuOpen && activeItemRef.current) {
+      // 'nearest' 옵션을 사용하면 이미 화면에 보일 때는 움직이지 않고, 
+      // 가려져 있을 때만 최소한으로 움직여서 오류 걱정이 없습니다.
+      activeItemRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [isMenuOpen]);
+
+
   return (
     <nav
-      className="top-toc"
+      ref={dropdownRef}
+      className={`top-toc ${isMenuOpen ? "menu-open" : ""}`}
       style={{
         display: isVisible ? "block" : "none",
         visibility: isVisible ? "visible" : "hidden",
         opacity: isVisible ? 1 : 0,
         pointerEvents: isVisible ? "auto" : "none",
-        transition: "opacity 0.25s ease-in-out", // ✅ 부드러운 페이드 효과
+        transition: "opacity 0.25s ease-in-out",
       }}
     >
-      {headings.length > 0 && activeIndex !== -1 ? (
-        <a
-          key={headings[activeIndex]?.id}
-          href={`#${headings[activeIndex]?.id}`}
-          className="toc-link active"
-        >
-          {headings[activeIndex]?.fullPath} {/* ✅ 하나의 항목만 표시 */}
-        </a>
-      ) : null}
+      {/* 1. 오버레이 (본문 클릭 차단) */}
+      {isMenuOpen && (
+        <div className="toc-overlay" onClick={() => setIsMenuOpen(false)} />
+      )}
+  
+      {/* 2. 상단 현재 위치 표시 영역 (IIFE) */}
+      {headings.length > 0 && activeIndex !== -1 ? (() => {
+        const activeItem = headings[activeIndex];
+        const pathParts = activeItem.fullPath.split(" / ");
+        const currentTitle = pathParts.pop();
+        const parentPath = pathParts.join(" / ");
+  
+        return (
+          <div className="toc-main">
+            <div className="toc-content-wrapper">
+              {parentPath && <span className="toc-parent">{parentPath}</span>}
+              <a key={activeItem.id} href={`#${activeItem.id}`} className="toc-link active">
+                <span className="toc-current">{currentTitle}</span>
+              </a>
+            </div>
+  
+            <button 
+              className="toc-dropdown-trigger"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation(); // ✅ 핵심: 이벤트가 nav(dropdownRef)로 퍼지는 것을 막아 닫힘 충돌 방지
+                setIsMenuOpen(!isMenuOpen);
+              }}
+            >
+              <span className="toc-dropdown-icon"></span>
+            </button>
+          </div>
+        ); // ⬅️ toc-main 닫음
+      })() : null}
+  
+      {/* 3. 드롭다운 리스트 (에러 방지를 위해 IIFE 밖에 배치) */}
+      <div className={`toc-dropdown-list ${isMenuOpen ? 'show' : ''}`}>
+        <div className="toc-dropdown-page-title">
+          {pageTitle}
+        </div>
+        <div className="dropdown-divider" />
+  
+        {headings.map((h, index) => (
+          <a 
+            key={h.id}
+            ref={index === activeIndex ? activeItemRef : null} 
+            href={`#${h.id}`} 
+            className={`toc-dropdown-item level-${h.level} ${index === activeIndex ? 'active' : ''}`}
+            onClick={() => setIsMenuOpen(false)}
+          >   
+            {h.text}
+          </a>
+        ))}
+        
+        {/* 4. 하단 여백 공간 */}
+        <div className="toc-dropdown-bottom-space" />
+      </div>
     </nav>
-  );  
+  );
   
 }

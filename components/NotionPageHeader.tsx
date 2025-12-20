@@ -15,14 +15,14 @@ export function NotionPageHeader({
 
   // 숫자와 영어를 강제로 짝지어서 제시.  절대 경로 - 상대 경로 꼬이지 않아야.
   const navigationMap: Record<string, string> = {
-    '19ff3422532d8077b9a8c28bf15c1395': 'about-me',
+    '19ff3422532d8077b9a8c28bf15c1395': 'aboutme',
     '19ff3422532d8046b758d593a45594a5': 'project',
     '19ff3422532d80b6b991e9459ddd4927': 'blog'
   };
 
   const fixedPages = [
     { pageId: '2cdf3422532d80bda8a7dd80223460d0', title: 'HOME', category: 'home' },
-    { pageId: '19ff3422532d8077b9a8c28bf15c1395', title: 'ABOUT ME', category: 'about-me' },
+    { pageId: '19ff3422532d8077b9a8c28bf15c1395', title: 'ABOUT ME', category: 'aboutme' },
     { pageId: '19ff3422532d8046b758d593a45594a5', title: 'PROJECT', category: 'project' },
     { pageId: '19ff3422532d80b6b991e9459ddd4927', title: 'BLOG', category: 'blog' }
   ];
@@ -89,7 +89,7 @@ export function NotionPageHeader({
               key={index}
               className={`breadcrumb button ${
                 isActive(link.pageId, link.category) ? 'selected' : ''
-              } ${link.title === 'HOME' ? '' : 'desktop-only'}`}
+              } ${link.title === 'HOME' ? 'home-link' : 'desktop-only'}`} // home-link 와 다른 링크 구별
             >
               <span className="page-title">{link.title}</span>
             </components.PageLink>

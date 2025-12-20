@@ -6,10 +6,13 @@
  * whereas our goal with this site is to adjust Notion's styling in a few key
  * places to add some flare.
  */
+ html {
+  scroll-behavior: smooth !important;
+}
 
 .notion {
   --notion-max-width: 720px;
-  --notion-header-height: 54px;
+  --notion-header-height: 50px;
   font-family: var(--font-primary) !important;
 }
 /* 🔹 Notion 기본 블록 폰트 적용 */
@@ -233,15 +236,41 @@
   gap: 16px;
   align-items: center;
   justify-content: flex-start;
-  margin-left: 12px;
+  margin-left: 8px;
 }
 
 /* 공통 링크 스타일 */
 .breadcrumb.button {
   text-decoration: none;
-  color: var(--text-color);
+  color: var(--fg-color-3);
   transition: color 0.3s ease;
   font-weight: normal;
+}
+
+/* ✅ 1. 홈 버튼 전용: 글자는 숨기고 아이콘만 노출 */
+.breadcrumb.button.home-link .page-title {
+  font-size: 0 !important; /* 원본 "HOME" 글자 숨김 */
+  color: transparent !important;
+  display: inline-flex !important;
+  align-items: center;
+}
+
+/* 3. 아이콘 주입 및 설정 */
+.breadcrumb.button.home-link .page-title::before {
+  content: "" !important;
+  display: inline-block;
+  width: 24px;  /* 아이콘 크기 */
+  height: 24px;
+  background-color: var(--fg-color-3); /* 아이콘 색상 조절 가능 */
+  
+  /* SVG 파일 경로 설정 */
+  -webkit-mask-image: url('/icons/home300.svg'); 
+  mask-image: url('/icons/home300.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  visibility: visible !important;
 }
 
 .breadcrumb.button:hover {
@@ -251,7 +280,6 @@
 /* ✅ 선택된 메뉴 항목 스타일 */
 .breadcrumb.button.selected {
   color: var(--select-color-0);
-  font-weight: bold;
   border-bottom: 2px solid var(--select-color-0);
   margin-bottom: -2px;
 }
@@ -259,7 +287,7 @@
 .notion-header .breadcrumb {
   justify-content: left;
   border-radius: 0px;
-
+  margin: 0;
 }
 
 /* 📌 네비게이션 */
@@ -310,37 +338,56 @@
   color: var(--fg-color);
 }
 
-/* 📌 햄버거 버튼 */
+/* 📌 햄버거 버튼 컨테이너: 다른 버튼과 규격 통일 */
 .hamburger-btn {
-  display: none;
+  display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  width: 52px;
-  height: 18px;
+  
+  /* ✅ 검색 버튼 규격에 맞춤 */
+  width: 40px !important; 
+  height: 40px !important; 
+  
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 1100; /* ✅ 모바일 메뉴 위에 */
+  position: relative;
+  z-index: 1100;
+  padding: 0; /* 패딩 초기화로 중앙 정렬 보장 */
 }
 
+/* 📌 내부 라인: 아이콘 실제 크기 (16px ~ 18px) */
 .hamburger-line {
-  width: 50%;
-  height: 2px;
-  background-color: var(--fg-color);
-  border-radius: 2px;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  position: absolute;
+  /* ✅ 아이콘 실질 크기를 18px로 조정 (전체 40px 내에서 적절한 비율) */
+  width: 18px; 
+  height: 2px !important;
+  background-color: var(--fg-color-3);
+  border-radius: 1px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 📌 햄버거 X자 애니메이션 */
+/* 평상시 세 줄 위치 (중앙 기준 정밀 배분) */
+.hamburger-line:nth-child(1) { transform: translateY(-5px); }
+.hamburger-line:nth-child(2) { transform: translateY(0); }
+.hamburger-line:nth-child(3) { transform: translateY(5px); }
+
+/* 📌 햄버거 X자 애니메이션 (어긋남 방지) */
 .hamburger-btn.open .hamburger-line:nth-child(1) {
-  transform: translateY(5px) rotate(45deg);
+  /* 중앙으로 모인 후 회전 */
+  transform: translateY(0) rotate(45deg);
+  width: 20px; /* 대각선 길이를 고려해 살짝 확장 (선택 사항) */
 }
+
 .hamburger-btn.open .hamburger-line:nth-child(2) {
   opacity: 0;
+  transform: translateX(-5px);
 }
+
 .hamburger-btn.open .hamburger-line:nth-child(3) {
-  transform: translateY(-5px) rotate(-45deg);
+  transform: translateY(0) rotate(-45deg);
+  width: 20px;
 }
 
 /* 📌 검색 및 햄버거 버튼 정렬 */
@@ -852,6 +899,7 @@
 
  .dark-mode {
   --fg-color-0: rgba(255,255,255,0.1);
+  --fg-color-3: rgba(255,255,255,0.5);
 }
 
 .notion-page-icon-hero {
@@ -998,6 +1046,8 @@
 .searchIcon {
   width: 16px !important;
   height: 16px !important;
+  color: var(--fg-color-3) !important;
+  fill: var(--fg-color-3) !important;
 }
 
 .notion-equation.notion-equation-block{
@@ -1127,29 +1177,202 @@
 /* 🔹 상단 고정 TOC 스타일 */
 .top-toc {
   position: sticky; /* 부모 요소 기준으로 배치 */
-  top: 0; /* 기존 헤더 높이만큼 아래에 배치 */
+  top: 4px; /* 기존 헤더 높이만큼 아래에 배치 */
   left: 0;
   width: 100%;
   justify-self: center; /* ✅ 중앙 정렬 */
-  height: calc(2 * var(--notion-header-height)); /* 헤더 높이의 2배 */
+  height: calc(2.2 * var(--notion-header-height)); /* 헤더 높이의 2배 */
   background: var(--bg-color); /* 반투명 배경 */
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.04);
+  /* ✅ 양옆으로 삐져나오지 않는 하단 그림자 */
+  /* 가로: 0, 세로: 10px, 번짐: 15px, 확산: -10px (음수값이 핵심) */
+  box-shadow: 0 8px 10px -10px rgba(0, 0, 0, 0.5); 
+  
   z-index: 800; /* ✅ 헤더보다 낮은 z-index (헤더가 위에 오도록) */
 
   /* ✅ 텍스트를 아래쪽으로 정렬 */
   align-content: flex-end;
-  padding-bottom: 16px;
 }
 
 .top-toc a {
-  margin: 0 15px;
-  font-weight: bold;
+  display: block !important; /* 글자 영역확보*/
   text-decoration: none;
-  color: var(--text-color);
-  font-size: 18px;
   transition: color 0.2s ease-in-out;
   white-space: nowrap; /* ✅ 한 줄로 유지 */
+  overflow: hidden !important;
   text-overflow: ellipsis; /* ✅ 줄임표(...) 표시 */
+}
+
+/* 본문 전체를 덮는 투명 레이어 */
+.toc-overlay {
+  position: fixed; /* 브라우저 화면 전체 기준 */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0); /* 완전 투명 (클릭만 막음) */
+  z-index: 100; /* 본문 요소들보다 높은 위치 */
+}
+
+.toc-main {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  padding: 0 0 0 16px;
+  position: relative; /* 드롭다운과 헤더 버튼이 오버레이보다 위에 있어야 함 */
+  z-index: 800 !important; /* 오버레이(9999)보다 높게 설정 */
+  min-height: 52px;
+}
+
+.toc-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* 남은 공간 차지 */
+  overflow: hidden;
+  gap: 2px;
+}
+
+.toc-parent {
+  display: block !important; /* 글자 영역확보*/
+  font-size: 14px !important;
+  color: var(--fg-color-3) !important;
+  height: 16px;
+  white-space: nowrap; /* ✅ 한 줄로 유지 */
+  overflow: hidden !important;
+  text-overflow: ellipsis; /* ✅ 줄임표(...) 표시 */
+}
+
+.toc-current {
+  display: inline-block !important; /* block 제거 */
+  font-size: 18px !important;
+  font-weight: bold;
+  color: var(--select-color-0) !important;
+  white-space: nowrap; /* ✅ 한 줄로 유지 */
+  overflow: hidden !important;
+  text-overflow: ellipsis; /* ✅ 줄임표(...) 표시 */
+  width: 99%;
+  flex: 1; /* 남은 공간을 차지하여 아이콘을 우측으로 밀어냄 */
+  margin-right: 8px; /* 아이콘과의 간격 */
+}
+
+.toc-content-wrapper > .toc-link:first-child {
+  margin-top: 18px;
+}
+
+.toc-dropdown-trigger {
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* ✅ 우측 아이콘 스타일 */
+.toc-dropdown-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  
+  /* ✅ 핵심: 현재 테마의 글자색을 아이콘 색상으로 사용 */
+  background-color: var(--fg-color) !important; 
+  
+  /* ✅ SVG를 마스크로 씌움 (색상 변경 가능해짐) */
+  -webkit-mask-image: url('/icons/dropdown400.svg');
+  mask-image: url('/icons/dropdown400.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.dark-mode .toc-dropdown-icon {
+  color: var(--fg-color);
+}
+
+/* 드롭다운 리스트 컨테이너 */
+.toc-dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--notion-bg-color, var(--bg-color)) !important; /* 투명도 해결 */
+  border: 8px solid var(--bg-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* 위에 떠 있는 연출 */
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 801 !important; /* 최상단 배치 */
+  padding: 8px 0 !important;
+  scrollbar-width: thin;
+  overflow-y: auto;
+
+  /* 💡 애니메이션 기준점 설정 */
+  transform-origin: top center; 
+  
+  /* 💡 초기 상태: 숨김 + 위로 살짝 압축된 상태 */
+  opacity: 0;
+  visibility: hidden; 
+  pointer-events: none;
+  transform: translateY(-5px) scaleY(0.8); /* 살짝 위로 붙으면서 세로로 압축 */
+  
+  /* 💡 띠용 하는 탄성 효과 (cubic-bezier) */
+  transition: 
+    opacity 0.1s ease-out,
+    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), /* 탄성 효과 추가 */
+    visibility 0.1s;
+}
+
+/* ✅ 2. show 클래스가 붙었을 때만 보이게 설정 */
+.toc-dropdown-list.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(0) scaleY(1) !important; /* 원래 크기와 위치로 */
+}
+
+.toc-dropdown-page-title {
+  display: block;
+  text-decoration: none;
+  color: var(--fg-color);
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 16px;
+}
+
+/* 개별 항목 스타일 */
+.toc-dropdown-item {
+  display: block;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: var(--fg-color);
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+/* 계층별 마진 (h1, h2, h3) */
+.toc-dropdown-item.level-1 { padding-left: 0px; font-weight: 600; }
+.toc-dropdown-item.level-2 { padding-left: 16px }
+.toc-dropdown-item.level-3 { padding-left: 32px; opacity: 0.8; }
+.toc-dropdown-item.level-4 { padding-left: 48px; opacity: 0.8; }
+
+.toc-dropdown-item:hover {
+  background-color: var(--bg-color-1);
+}
+
+/* ✅ 현재 위치 파란색 표시 */
+.toc-dropdown-item.active {
+  color: var(--select-color-0) !important;
+  font-weight: bold;
+  background-color: var(--fg-color-1);
+  opacity: 1 !important;
+}
+
+/* 메뉴 활성화 시 배경 텍스트 숨기기/비활성화 */
+.top-toc.menu-open .toc-content-wrapper {
+  opacity: 0.3; /* 비활성화 느낌 */
+  pointer-events: none; /* 클릭 방지 */
 }
 
 .top-toc a:hover {
