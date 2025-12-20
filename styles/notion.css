@@ -26,6 +26,10 @@
   justify-content: center; /* ✅ 중앙 정렬 */
   align-items: flex-start;
   width: 100%;
+  /*최대너비 1024 고정*/
+  max-width: 1024px;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 .notion-page {
@@ -73,6 +77,12 @@
   display: flex;
   flex-direction: column;
 }
+
+/* 아이콘이 없지만, 페이지 커버는 있을 경우 */
+.notion-page.notion-page-has-cover.notion-page-no-icon {
+  padding-top: 0px;
+}
+
 
 /* ✅ 아이콘이 없는 페이지에만 적용 */
 .notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
@@ -614,7 +624,8 @@
 
 .notion-collection-row {
   padding-bottom: 1em;
-  margin-bottom: 0;
+  margin-bottom: 2em;
+  border-bottom: 0;
 }
 
 .notion-collection-page-properties .notion-collection-column-title {
@@ -641,31 +652,33 @@
   min-height: 23px;
 }
 
-.notion-page-cover-wrapper,
+/*.notion-page-cover-wrapper,
 .notion-page-cover-wrapper span,
 .notion-page-cover-wrapper img {
   max-width: 1100px;
   margin: auto;
   text-align: center;
   border-radius: 24px;
-  overflow: hidden; /* ✅ 넘치는 콘텐츠 숨기기 */
+  overflow: hidden;
 }
 
 .notion-page-cover-wrapper {
-  /* box-shadow: 2px 2px 8px 4px rgba(15, 15, 15, 0.1); */
   max-height: 15vh;
   min-height: 15vh;
   position: relative;
-  overflow: hidden; /* ✅ 넘치는 콘텐츠 숨기기 */
-}
+  overflow: hidden;
 
 .notion-page-cover-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* ✅ 이미지 비율 유지하며 영역 채우기 */
+  object-fit: cover;
   border-radius: 24px;
 }
+*/
 
+.notion-page-cover-wrapper {
+  display: none;
+}
 
 .notion-block-ab9a258d6cf444f3bb40dc2600feae91 .notion-page-link {
   justify-content: center;
@@ -869,11 +882,14 @@
   /*background: hsla(0, 0%, 100%, 0.8); 투명도 있는 배경*/
   background: var(--bg-color);
   backdrop-filter: saturate(180%) blur(16px);
-  margin: 0 auto; /* ✅ 가운데 정렬 */
   display: flex; /* ✅ Flexbox를 사용하여 내부 요소 정렬 */
   justify-content: space-between; /* 내부 요소 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
   width: 100%; /* 전체 너비를 차지 */
+  /*최대너비 1024 고정*/
+  max-width: 1024px;
+  left: 50% !important;
+  transform: translateX(-50%) !important; /*화면 중앙 기준 정렬*/
   padding: 0 16px; /* 좌우 여백 */
   box-sizing: border-box; /* 패딩 포함한 너비 계산 */
   overflow: visible;
@@ -1219,6 +1235,7 @@ nav.top-toc:empty {
 .notion-table-of-contents {
   padding-left: 10px;
   font-size: 14px;
+  margin: 0;
 }
 
 .notion-table-of-contents a {
@@ -1332,6 +1349,7 @@ nav.top-toc:empty {
 
   .notion-page-content-inner {
     width: 100%;
+    padding: 16px;
   }
 
   .notion-aside {
@@ -1339,8 +1357,8 @@ nav.top-toc:empty {
   }
 }
 
-/* 📌 480px ~ 768px (태블릿) */
-@media (min-width: 480px) and (max-width: 767px) {
+/* 📌 480px ~ 720px (태블릿) */
+@media (min-width: 480px) and (max-width: 720px) {
   .notion-page-content {
     flex-direction: column;
     align-items: center;
@@ -1356,52 +1374,88 @@ nav.top-toc:empty {
   }
 }
 
-/* 📌 768px ~ 1024px (태블릿 가로) */
-@media (min-width: 768px) and (max-width: 1100px) {
+/* 📌 720px ~ 1100px (태블릿 가로) */
+@media (min-width: 720px) and (max-width: 1100px) {
   .notion-page-content {
     flex-direction: column;
     align-items: center;
   }
 
-  .notion-page-content-inner {
-    max-width: 768px;
-    width: 100%;
-  }
-
   .notion-aside {
     display: none; /* 태블릿에서도 사이드바 숨김 */
+  }
+
+  /* ✅ 본문 컨텐츠 영역 너비 제한 및 중앙 정렬 */
+  .notion-page.notion-page-no-cover.notion-page-has-icon .notion-page-content {
+    max-width: 720px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    display: block !important; /* flex가 설정되어 있다면 block으로 변경하여 margin auto 작동 유도 */
+  }
+
+  /* ✅ 내부 실제 텍스트/이미지들이 들어가는 컨테이너도 함께 조정 */
+  .notion-page.notion-page-no-cover.notion-page-has-icon .notion-page-content-inner {
+    max-width: 720px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  .notion-page-content-inner {
+    padding: 16px;
+  }
+
+  .top-toc, .notion-top-toc {
+    max-width: 720px;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
   
 
-/* 📌 1024px 이상 (데스크탑) */
+/* 📌 1100px 이상 (데스크탑) - 사이드바 가로 배치 강제 */
 @media (min-width: 1100px) {
-  .notion-page-content {
-    flex-direction: row;
-    align-items: flex-start;
-  }
 
   .notion-page-content-inner {
-    max-width: calc(100% - 288px); /* 사이드바 너비(256px) + 간격(32px) 제외 */
+    padding: 16px;
   }
 
-  .notion-aside {
-    display: block;
+  /* 1. 부모: block 제거하고 flex로 고정 */
+  .notion-page.notion-page-no-cover.notion-page-has-icon .notion-page-content {
+    display: flex !important;           /* block !important를 삭제하고 flex로 변경 */
+    flex-direction: row !important;     /* 가로 나열 */
+    flex-wrap: nowrap !important;       /* 줄바꿈 방지 */
+    justify-content: center !important;  /* 중앙 정렬 */
+    align-items: flex-start !important;
+    max-width: 1024px !important;
+    margin: 0 auto !important;          /* 중앙 배치 */
+    width: 100% !important;
+    gap: 40px;                          /* 본문과 사이드바 간격 */
   }
-}
 
-/* 📌 1024px 이상 (대형 화면) */
-@media (min-width: 1100px) {
+  /* 2. 본문: 너비 고정 */
+  .notion-page.notion-page-no-cover.notion-page-has-icon
+  .notion-page-content-inner {
+    width: 100% !important;
+    max-width: 720px !important;
+    margin: 0 !important;
+    flex-shrink: 1 !important;
+  }
+
+  /* 3. 사이드바: 고정 및 노출 */
   .notion-aside {
     display: flex !important;
+    width: 224px !important;            /* 앞서 확인된 224px 유지 */
+    flex-shrink: 0 !important;          /* 너비 고정 */
+    position: sticky !important;
+    top: 100px !important;
   }
 
-  .top-toc {
+  .top-toc, .notion-top-toc {
     display: none !important;
   }
 }
 
-/* 📌 1024px 이하에서는 TOC 보이기 */
 /* 📌 [통합 정리] 1100px 미만: 사이드바 숨기고 상단 TOC 보이기 */
 @media (max-width: 1099px) {
   .notion-aside {
@@ -1417,23 +1471,5 @@ nav.top-toc:empty {
   .notion-page-content-inner {
     width: 100%;
     max-width: 100%; /* 화면 꽉 차게 조절 */
-  }
-}
-
-/* 📌 [통합 정리] 1100px 이상: 사이드바 보이고 상단 TOC 숨기기 */
-@media (min-width: 1100px) {
-  .notion-aside {
-    display: flex !important; /* 사이드바 활성화 */
-  }
-  .notion-top-toc, .top-toc {
-    display: none !important; /* 상단 TOC 비활성화 */
-  }
-  .notion-page-content {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-  .notion-page-content-inner {
-    /* 사이드바 너비만큼 제외하고 본문 영역 확보 */
-    max-width: calc(100% - 288px); 
   }
 }
