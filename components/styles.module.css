@@ -180,10 +180,9 @@
   background: #e5f2e8;
 }
 
-@media (max-width: 1360px) {
-  .githubCorner {
-    display: none;
-  }
+/*크기 상관 없이 오른쪽 상단 코너 표기 없애기*/
+.githubCorner {
+  display: none;
 }
 
 .githubCorner:hover .octoArm {

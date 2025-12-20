@@ -85,7 +85,6 @@
   /*우측 공간 강제로 비우기 위한 최대 너비 제한*/
   line-height: 1 !important;
   margin-bottom: 0 !important;
-  margin-top: 32px !important;
 }
 
 .notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
@@ -98,7 +97,7 @@
   max-width: 1100px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 16px 64px 16px;
+  padding: 16px 16px 64px 16px;
   box-sizing: border-box;
 }
 
@@ -113,8 +112,8 @@
 }
 
 /* ✅ Cover가 없는 페이지에만 적용 */
-.notion-page.notion-page-no-cover.notion-page-has-icon.notion-page-has-image-icon.notion-full-page
-.notion-page-content {
+.notion-page.notion-page-no-cover.notion-page-has-icon
+.notion-full-page .notion-page-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -125,10 +124,10 @@
   box-sizing: border-box;
 }
 
-.notion-page.notion-page-no-cover.notion-page-has-icon.notion-page-has-image-icon.notion-full-page
-.notion-page-content-inner {
+.notion-page.notion-page-no-cover.notion-page-has-icon
+.notion-full-page .notion-page-content-inner {
   width: 100%;
-  max-width: 768px;
+  max-width: 700px;
   box-sizing: border-box;
   padding: 0;
   overflow: hidden;
@@ -610,15 +609,25 @@
   font-size: 2em;
   display: block;
   text-align: center;
+  margin: 32px 0 8px;
 }
 
 .notion-collection-row {
   padding-bottom: 1em;
+  margin-bottom: 0;
 }
 
 .notion-collection-page-properties .notion-collection-column-title {
   display: none;
 }
+
+/* 🔹 'hide' 체크박스가 체크되었을 때 (.notion-property-checkbox-checked 클래스가 있을 때)
+   상위의 .notion-collection-page-properties 전체를 숨깁니다. */
+
+   .notion-collection-page-properties:has(.notion-property-checkbox-checked) {
+    display: none !important;
+  }
+
 
 .notion-collection-row-property .notion-property {
   display: flex;
@@ -832,6 +841,10 @@
   --fg-color-0: rgba(255,255,255,0.1);
 }
 
+.notion-page-icon-hero {
+  margin-top: 32px;
+}
+
 /* if you don't want rounded page icon images, remove this */
 .notion-page-icon-hero.notion-page-icon-image {
   border-radius: 50%;
@@ -840,6 +853,12 @@
 .notion-page-icon-hero.notion-page-icon-image span,
 .notion-page-icon-hero.notion-page-icon-image img {
   border-radius: 50%;
+}
+
+.notion-page-icon-hero.notion-page-icon-span {
+  width: 124px;
+  height: 124px;
+  margin-left: -62px;
 }
 
 .notion-header {
@@ -1148,6 +1167,10 @@ nav.top-toc:empty {
   margin-top: 0 !important;
 }
 
+.notion-page-no-cover.notion-page-has-icon {
+  padding-top: 150px !important;
+}
+
 .notion-page .notion-page-has-cover .notion-page-has-icon 
 .notion-page-has-image-icon .notion-full-page 
 .notion-full-width .index-page {
@@ -1158,6 +1181,7 @@ nav.top-toc:empty {
 
 .notion-page-content-inner {
   display: block;
+  padding-top: 16px;
 }
 
 /* 🔹 목차 내부 스타일 */
@@ -1198,11 +1222,24 @@ nav.top-toc:empty {
 }
 
 .notion-table-of-contents a {
-  display: block;
+  display: block !important;
   padding: 5px 10px;
   color: var(--text-color);
   text-decoration: none;
   transition: all 0.2s ease-in-out;
+
+  /* 말줄임표 설정 */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ✅ 인라인 스타일(inline-block)이 적용된 span을 강제로 block으로 변경 */
+.notion-table-of-contents-item-body {
+  display: block !important; 
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
 
 /* TagTab 스타일 */
