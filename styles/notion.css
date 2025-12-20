@@ -81,23 +81,55 @@
   flex-direction: column;
 }
 
-/* 아이콘이 없지만, 페이지 커버는 있을 경우 */
+/* 아이콘이 없고 페이지 커버도 없는 경우. 리스트 페이지 */
+/* 📌 최종 해결 코드: Has 선택자 활용 (가장 확실함) */
+/* .notion-page-scroller가 '아이콘 없는 페이지'를 자식으로 가졌을 때, 
+내부의 top-toc을 숨김 */
+.notion-page-scroller:has(.notion-page-no-icon) .top-toc,
+.notion-page-scroller:has(.notion-page-no-icon) .notion-top-toc {
+  display: none !important;
+}
+
+
+/* 아이콘이 없지만, 페이지 커버는 있을 경우. project 페이지 */
 .notion-page.notion-page-has-cover.notion-page-no-icon {
   padding-top: 0px;
 }
 
+.notion-page.notion-page-has-cover.notion-page-no-icon .notion-title {
+  font-size: 2.5rem;
+}
+
+.notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon {
+  container-type: inline-size;
+}
 
 /* ✅ 아이콘이 없는 페이지에만 적용 */
 .notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
 .notion-title {
-  font-size: clamp(6rem, 10vw, 6rem) !important;
+  font-size: 6rem;
   /*height: 128px;*/
   text-align: right;
   padding: 0 8px 0 0;
   letter-spacing: -0.03em;
   /*우측 공간 강제로 비우기 위한 최대 너비 제한*/
-  line-height: 1 !important;
+  line-height: 1.1 !important;
   margin-bottom: 0 !important;
+}
+
+/* 화면 너비가 720px보다 작아지면 clamp를 적용하여 폰트 축소 */
+@media (max-width: 720px) {
+  .notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page .notion-title {
+    /* 6em을 넘지 않되, 컨테이너 너비의 18%만큼 꽉 채움 (글자수에 따라 % 조절 필요) */
+    font-size: min(6rem, 20cqw) !important;
+    
+    /* ✅ 글자가 삐져나가는 것을 방지하는 핵심 설정 */
+    inline-size: 100%;
+    overflow-wrap: break-word; /* 너무 길면 줄바꿈 */
+    word-break: keep-all;      /* 한글의 경우 단어 단위 유지 */
+    display: block;
+    line-height: 1.1;
+  }
 }
 
 .notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
@@ -1676,23 +1708,5 @@ nav.top-toc:empty {
 
   .top-toc, .notion-top-toc {
     display: none !important;
-  }
-}
-
-/* 📌 [통합 정리] 1100px 미만: 사이드바 숨기고 상단 TOC 보이기 */
-@media (max-width: 1099px) {
-  .notion-aside {
-    display: none !important;
-  }
-  .notion-top-toc, .top-toc {
-    display: block !important;
-  }
-  .notion-page-content {
-    flex-direction: column;
-    align-items: center;
-  }
-  .notion-page-content-inner {
-    width: 100%;
-    max-width: 100%; /* 화면 꽉 차게 조절 */
   }
 }
