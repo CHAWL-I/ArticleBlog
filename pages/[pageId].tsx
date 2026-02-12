@@ -15,76 +15,68 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (
   try {
     const props = await resolveNotionPage(domain, rawPageId)
     const anyProps = props as any
-  
-    if (anyProps.recordMap && anyProps.recordMap.block) {
-      const blocks = anyProps.recordMap.block
-  
-      Object.keys(blocks).forEach((id) => {
-        const blockEntry = blocks[id]
-        const blockValue = blockEntry?.value
-      
-        // 1. 기본 유효성 검사
-        if (!blockEntry || !blockValue) {
-          delete blocks[id]
-          return
-        }
-      
-        // 2. 필수 ID 및 부모 ID 보정
-        if (!blockValue.id) blockValue.id = id
-        if (!blockValue.parent_id) {
-          blockValue.parent_id = anyProps.site?.rootNotionPageId || ''
-        }
-      
-        // 3. 자식 블록 필터링 (유령 블록 제거)
-        if (Array.isArray(blockValue.content)) {
-          blockValue.content = blockValue.content.filter((childId) => {
-            return childId && blocks[childId] && blocks[childId].value
-          })
-        }
-      
-        // 4. [핵심] 속성(properties) 및 제목(title) 방어 - 중복 제거 및 통합
-        // 모든 블록은 최소한 비어있는 properties와 title 배열을 가져야 렌더링 시 터지지 않습니다.
-        if (!blockValue.properties) {
-          blockValue.properties = {}
-        }
-      
-        if (!blockValue.properties.title || !Array.isArray(blockValue.properties.title)) {
-          blockValue.properties.title = [[' ']] 
-        }
-      
-        // 5. 데이터베이스(Collection) 전용 방어 로직
-        if (blockValue.type === 'collection_view' || blockValue.type === 'collection_view_page') {
-          const collectionId = blockValue.collection_id
-          const collection = anyProps.recordMap.collection?.[collectionId]?.value
-      
-          if (!collectionId || !collection) {
-            if (!anyProps.recordMap.collection) anyProps.recordMap.collection = {}
-            anyProps.recordMap.collection[collectionId] = {
-              value: {
-                name: [['데이터 로딩 중...']],
-                schema: { title: { name: 'title', type: 'title' } } // 스키마 기본값 추가
-              }
-            }
-          } else if (!collection.schema) {
-            collection.schema = { title: { name: 'title', type: 'title' } }
+
+    if (anyProps.recordMap) {
+      // 1. 블록(Blocks) 순회 및 방어
+      if (anyProps.recordMap.block) {
+        const blocks = anyProps.recordMap.block
+        Object.keys(blocks).forEach((id) => {
+          const blockEntry = blocks[id]
+          const blockValue = blockEntry?.value
+
+          if (!blockEntry || !blockValue) {
+            delete blocks[id]
+            return
           }
-          
-          // 뷰(View) 필터링
-          if (blockValue.view_ids && Array.isArray(blockValue.view_ids)) {
-            blockValue.view_ids = blockValue.view_ids.filter(viewId => !!anyProps.recordMap.collection_view?.[viewId])
+
+          if (!blockValue.id) blockValue.id = id
+          if (!blockValue.parent_id) {
+            blockValue.parent_id = anyProps.site?.rootNotionPageId || ''
           }
-        }
-      })
+
+          // 자식 블록 필터링
+          if (Array.isArray(blockValue.content)) {
+            blockValue.content = blockValue.content.filter((childId) => {
+              return childId && blocks[childId] && blocks[childId].value
+            })
+          }
+
+          // 속성 및 제목 방어
+          if (!blockValue.properties) {
+            blockValue.properties = {}
+          }
+          if (!blockValue.properties.title || !Array.isArray(blockValue.properties.title)) {
+            blockValue.properties.title = [[' ']]
+          }
+        })
+      }
+
+      // 2. [최후의 수단] 컬렉션(Collection) 전수 조사 및 삭제
+      // 렌더링 시 참조되는 컬렉션 데이터 자체가 깨져있으면 블록을 고쳐도 터집니다.
+      if (anyProps.recordMap.collection) {
+        Object.keys(anyProps.recordMap.collection).forEach((colId) => {
+          const colEntry = anyProps.recordMap.collection[colId]
+          const colValue = colEntry?.value
+
+          // 컬렉션 정보가 없거나, 스키마(schema)가 없으면 렌더링 시 title 에러의 주범이 됩니다.
+          if (!colEntry || !colValue || !colValue.schema) {
+            console.warn(`[긴급] 깨진 컬렉션 제거로 빌드 우회: ${colId}`)
+            delete anyProps.recordMap.collection[colId] // 참조 연결을 끊어버립니다.
+          } else if (!colValue.schema.title) {
+            // 스키마는 있는데 title 설정이 없는 경우 기본값 주입
+            colValue.schema.title = { name: 'title', type: 'title' }
+          }
+        })
+      }
     }
-  
-    // 🔍 핵심 수정: 특정 속성만 null로 바꾸는 대신, 전체 객체를 대상으로 수행합니다.
-    // JSON.stringify의 replacer 함수를 사용하여 모든 undefined를 null로 세척합니다.
+
+    // 3. 모든 undefined를 null로 세척 (JSON 직렬화 에러 방지)
     const cleanProps = JSON.parse(
       JSON.stringify(props, (key, value) => (value === undefined ? null : value))
     )
-  
+
     return {
-      props: cleanProps // 정제된 데이터를 리턴
+      props: cleanProps
     }
   } catch (err) {
     console.error('page error', domain, rawPageId, err)
