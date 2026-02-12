@@ -1,97 +1,73 @@
 import { type GetStaticProps } from 'next'
-
 import { NotionPage } from '@/components/NotionPage'
-import TableOfContents from "@/components/TableOfContents"; // ✅ TOC 컴포넌트 가져오기
-import { domain, isDev } from '@/lib/config'
+import TableOfContents from "@/components/TableOfContents"
+import { domain } from '@/lib/config'
 import { getSiteMap } from '@/lib/get-site-map'
 import { resolveNotionPage } from '@/lib/resolve-notion-page'
 import { type PageProps, type Params } from '@/lib/types'
 
+// 1. 헤더에서 정의하신 슬러그 맵 (통역기)
+const navigationMap: Record<string, string> = {
+  '19ff3422532d8077b9a8c28bf15c1395': 'aboutme',
+  '19ff3422532d8046b758d593a45594a5': 'project',
+  '19ff3422532d80b6b991e9459ddd4927': 'blog'
+}
+
+const inverseMap = Object.fromEntries(
+  Object.entries(navigationMap).map(([id, slug]) => [slug, id])
+)
+
 export const getStaticProps: GetStaticProps<PageProps, Params> = async (context) => {
-  const rawPageId = context.params.pageId as string
+  let rawPageId = context.params.pageId as string
+
+  // 슬러그(blog 등)로 들어오면 실제 노션 ID로 변환
+  if (inverseMap[rawPageId]) {
+    rawPageId = inverseMap[rawPageId]
+  }
 
   try {
     const props = await resolveNotionPage(domain, rawPageId)
     const anyProps = props as any
 
+    // 2. [최신 노션 API 대응] 데이터 껍질 벗기기 및 수리
     if (anyProps.recordMap) {
       const { block, collection } = anyProps.recordMap
 
-      // 1. [최신 이슈 해결] 컬렉션 중첩 구조 보정
       if (collection) {
-        Object.keys(collection).forEach((colId) => {
-          const colEntry = collection[colId]
-          // 만약 데이터가 value.value 안에 숨어있다면 밖으로 꺼냅니다.
-          if (colEntry?.value?.value) {
-            collection[colId].value = colEntry.value.value
-          }
-
-          const colValue = collection[colId]?.value
-          if (!colValue) return
-          if (!colValue.schema) colValue.schema = {}
-          if (!colValue.schema.title) {
-            colValue.schema.title = { name: 'Title', type: 'title' }
-          }
+        Object.keys(collection).forEach((id) => {
+          if (collection[id]?.value?.value) collection[id].value = collection[id].value.value
+          if (collection[id]?.value && !collection[id].value.schema) collection[id].value.schema = {}
         })
       }
 
-      // 2. [최신 이슈 해결] 블록 중첩 구조 보정 및 제목/이미지 복구
       if (block) {
         Object.keys(block).forEach((id) => {
-          const entry = block[id]
-          
-          // 데이터가 value.value 안에 숨어있다면 밖으로 꺼냅니다.
-          if (entry?.value?.value) {
-            block[id].value = entry.value.value
-          }
-
+          if (block[id]?.value?.value) block[id].value = block[id].value.value
           const b = block[id]?.value
-          if (!b) {
-            delete block[id]
-            return
-          }
+          if (!b) return
 
           if (!b.id) b.id = id
+          if (!b.properties) b.properties = {}
 
-          // 자식 블록 필터링
-          if (Array.isArray(b.content)) {
-            b.content = b.content.filter(
-              (childId) => typeof childId === 'string' && !!block[childId]
-            )
+          // 한글 제목 및 데이터 복구 로직
+          if ((b.type === 'page' || b.type === 'collection_view_page') && (!b.properties.title || b.properties.title.length === 0)) {
+            const fallback = Object.values(b.properties).find(v => Array.isArray(v) && v.length > 0)
+            if (fallback) b.properties.title = fallback
           }
 
-          // 제목 데이터 복구 (properties.title이 비어있을 때 다른 속성에서 가져오기)
-          if ((b.type === 'page' || b.type === 'collection_view_page')) {
-            if (!b.properties) b.properties = {}
-            
-            if (!b.properties.title || b.properties.title.length === 0) {
-              // 한글 제목 등이 담긴 다른 속성이 있는지 확인
-              const fallbackKey = Object.keys(b.properties).find(k => Array.isArray(b.properties[k]) && b.properties[k].length > 0)
-              b.properties.title = fallbackKey ? b.properties[fallbackKey] : [['제목 없음']]
-            }
-
-            // [이미지] 본문 첫 이미지를 카드 커버로 강제 할당
-            if (b.content && !b.format?.page_cover) {
-              const firstImgId = b.content.find(cId => block[cId]?.value?.type === 'image')
-              if (firstImgId) {
-                const imgSource = block[firstImgId]?.value?.properties?.source?.[0]?.[0]
-                if (imgSource) {
-                  if (!b.format) b.format = {}
-                  b.format.page_cover = imgSource
-                }
-              }
+          // 본문 이미지 -> 썸네일 강제 주입
+          if (b.content && !b.format?.page_cover) {
+            const imgId = b.content.find(cId => block[cId]?.value?.type === 'image')
+            if (imgId && block[imgId].value.properties?.source) {
+              if (!b.format) b.format = {}
+              b.format.page_cover = block[imgId].value.properties.source[0][0]
             }
           }
         })
       }
     }
 
-    const safeProps = JSON.parse(
-      JSON.stringify(props, (key, value) =>
-        value === undefined ? null : value
-      )
-    )
-
+    const safeProps = JSON.parse(JSON.stringify(props, (k, v) => v === undefined ? null : v))
     return { props: safeProps }
   } catch (err) {
     console.error('page error', domain, rawPageId, err)
@@ -101,13 +77,14 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (context)
 
 export async function getStaticPaths() {
   const siteMap = await getSiteMap()
-  const staticPaths = {
-    paths: Object.keys(siteMap.canonicalPageMap).map((pageId) => ({
-      params: { pageId }
-    })),
-    fallback: false
-  }
-  return staticPaths
+  const paths = Object.keys(siteMap.canonicalPageMap).map((id) => ({ params: { pageId: id } }))
+
+  // 슬러그 주소들도 빌드 경로에 추가
+  Object.values(navigationMap).forEach(slug => {
+    paths.push({ params: { pageId: slug } })
+  })
+
+  return { paths, fallback: false }
 }
 
 export default function NotionDomainDynamicPage(props) {
@@ -118,7 +95,6 @@ export default function NotionDomainDynamicPage(props) {
     </>
   )
 }
-
 
 
 
