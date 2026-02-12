@@ -19,90 +19,72 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (
     if (anyProps.recordMap && anyProps.recordMap.block) {
       const blocks = anyProps.recordMap.block
   
-      // 1. 모든 블록을 검사하여 결함이 있는 데이터를 먼저 제거/수정
       Object.keys(blocks).forEach((id) => {
         const blockEntry = blocks[id]
         const blockValue = blockEntry?.value
-  
-        // Case A: 블록 데이터 자체가 없거나 value가 없는 경우 -> 맵에서 삭제
+      
+        // 1. 기본 유효성 검사
         if (!blockEntry || !blockValue) {
           delete blocks[id]
           return
         }
-  
-        // Case B: id가 없으면 현재 key값으로 채워줌 (uuidToId 에러 방지)
-        if (!blockValue.id) {
-          blockValue.id = id
-        }
-  
-        // Case C: parent_id가 없는 경우 (uuidToId 에러 방지용 기본값 채우기)
+      
+        // 2. 필수 ID 및 부모 ID 보정
+        if (!blockValue.id) blockValue.id = id
         if (!blockValue.parent_id) {
           blockValue.parent_id = anyProps.site?.rootNotionPageId || ''
         }
-  
-        // Case D: 자식 블록(content) 필터링
+      
+        // 3. 자식 블록 필터링 (유령 블록 제거)
         if (Array.isArray(blockValue.content)) {
           blockValue.content = blockValue.content.filter((childId) => {
-            const exists = childId && blocks[childId] && blocks[childId].value
-            if (!exists && childId) {
-              console.warn(`[빌드 알림] 유령 자식 블록 제거: ${childId}`)
-            }
-            return exists
+            return childId && blocks[childId] && blocks[childId].value
           })
         }
-        
-        // pages/[pageId].tsx 내의 데이터베이스 방어 로직 (Case E)
-
-        // pages/[pageId].tsx 내의 Case E 수정
+      
+        // 4. [핵심] 속성(properties) 및 제목(title) 방어 - 중복 제거 및 통합
+        // 모든 블록은 최소한 비어있는 properties와 title 배열을 가져야 렌더링 시 터지지 않습니다.
+        if (!blockValue.properties) {
+          blockValue.properties = {}
+        }
+      
+        if (!blockValue.properties.title || !Array.isArray(blockValue.properties.title)) {
+          blockValue.properties.title = [[' ']] 
+        }
+      
+        // 5. 데이터베이스(Collection) 전용 방어 로직
         if (blockValue.type === 'collection_view' || blockValue.type === 'collection_view_page') {
-          const collectionId = blockValue.collection_id;
-          const collection = anyProps.recordMap.collection?.[collectionId]?.value;
-
-          // ✅ 핵심 수정: 데이터가 정말 없어서 에러를 일으킬 것 같으면,
-          // 라이브러리가 이해할 수 있는 '최소한의 가짜 데이터'를 넣어줍니다.
+          const collectionId = blockValue.collection_id
+          const collection = anyProps.recordMap.collection?.[collectionId]?.value
+      
           if (!collectionId || !collection) {
-            console.warn(`[빌드 알림] 데이터 누락으로 인한 안전 모드 전환: ${id}`);
-            
-            // 방법 1: 에러 방지를 위해 타입은 유지하되, 빈 컬렉션 객체를 강제로 생성
-            if (!anyProps.recordMap.collection) anyProps.recordMap.collection = {};
-            if (collectionId && !anyProps.recordMap.collection[collectionId]) {
-              anyProps.recordMap.collection[collectionId] = {
-                value: {
-                  name: [['데이터를 불러오는 중...']],
-                  schema: {} // 이게 없으면 title 에러가 날 수 있음
-                }
-              };
-            } else {
-              // 컬렉션 ID조차 없다면 안전하게 텍스트로 치환 (최후의 수단)
-              blockValue.type = 'text';
-              blockValue.properties = { title: [['[데이터베이스 로딩 실패]']] };
+            if (!anyProps.recordMap.collection) anyProps.recordMap.collection = {}
+            anyProps.recordMap.collection[collectionId] = {
+              value: {
+                name: [['데이터 로딩 중...']],
+                schema: { title: { name: 'title', type: 'title' } } // 스키마 기본값 추가
+              }
             }
-          } 
+          } else if (!collection.schema) {
+            collection.schema = { title: { name: 'title', type: 'title' } }
+          }
           
-          // 뷰(View) 정보가 없으면 렌더링 에러가 나므로 체크
+          // 뷰(View) 필터링
           if (blockValue.view_ids && Array.isArray(blockValue.view_ids)) {
-            blockValue.view_ids = blockValue.view_ids.filter(viewId => {
-              const viewExists = !!anyProps.recordMap.collection_view?.[viewId];
-              return viewExists;
-            });
-            
-            // 만약 살아남은 뷰가 하나도 없다면 에러 방지를 위해 텍스트로 치환
-            if (blockValue.view_ids.length === 0) {
-              blockValue.type = 'text';
-              blockValue.properties = { title: [['[설정된 데이터베이스 뷰가 없습니다]']] };
-            }
+            blockValue.view_ids = blockValue.view_ids.filter(viewId => !!anyProps.recordMap.collection_view?.[viewId])
           }
         }
       })
     }
   
-    // 2. undefined 속성들 null로 변환 (JSON 직렬화 에러 방지)
-    if (anyProps.site && anyProps.site.rootNotionSpaceId === undefined) {
-      anyProps.site.rootNotionSpaceId = null
-    }
+    // 🔍 핵심 수정: 특정 속성만 null로 바꾸는 대신, 전체 객체를 대상으로 수행합니다.
+    // JSON.stringify의 replacer 함수를 사용하여 모든 undefined를 null로 세척합니다.
+    const cleanProps = JSON.parse(
+      JSON.stringify(props, (key, value) => (value === undefined ? null : value))
+    )
   
     return {
-      props: JSON.parse(JSON.stringify(props))
+      props: cleanProps // 정제된 데이터를 리턴
     }
   } catch (err) {
     console.error('page error', domain, rawPageId, err)
