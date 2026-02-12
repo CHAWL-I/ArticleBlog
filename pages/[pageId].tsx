@@ -53,31 +53,44 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (
         
         // pages/[pageId].tsx 내의 데이터베이스 방어 로직 (Case E)
 
+        // pages/[pageId].tsx 내의 Case E 수정
         if (blockValue.type === 'collection_view' || blockValue.type === 'collection_view_page') {
           const collectionId = blockValue.collection_id;
           const collection = anyProps.recordMap.collection?.[collectionId]?.value;
 
-          // 1. 컬렉션 정보(원본 데이터)가 아예 없는 경우
+          // ✅ 핵심 수정: 데이터가 정말 없어서 에러를 일으킬 것 같으면,
+          // 라이브러리가 이해할 수 있는 '최소한의 가짜 데이터'를 넣어줍니다.
           if (!collectionId || !collection) {
-            console.warn(`[빌드 알림] 원본 데이터가 누락된 데이터베이스 무력화: ${id}`);
-            blockValue.type = 'text';
-            blockValue.properties = {};
-            delete blockValue.collection_id;
+            console.warn(`[빌드 알림] 데이터 누락으로 인한 안전 모드 전환: ${id}`);
+            
+            // 방법 1: 에러 방지를 위해 타입은 유지하되, 빈 컬렉션 객체를 강제로 생성
+            if (!anyProps.recordMap.collection) anyProps.recordMap.collection = {};
+            if (collectionId && !anyProps.recordMap.collection[collectionId]) {
+              anyProps.recordMap.collection[collectionId] = {
+                value: {
+                  name: [['데이터를 불러오는 중...']],
+                  schema: {} // 이게 없으면 title 에러가 날 수 있음
+                }
+              };
+            } else {
+              // 컬렉션 ID조차 없다면 안전하게 텍스트로 치환 (최후의 수단)
+              blockValue.type = 'text';
+              blockValue.properties = { title: [['[데이터베이스 로딩 실패]']] };
+            }
           } 
-          // 2. 컬렉션은 있으나 제목(title/name) 데이터가 없어 'title' 에러를 유발할 경우
-          else if (!collection.name && !collection.title) {
-            console.warn(`[빌드 알림] 제목 정보가 없는 데이터베이스 보정: ${id}`);
-            // 빈 제목이라도 넣어주어 reading 'title' 에러를 방지합니다.
-            if (!collection.name) collection.name = [['Untitled']];
-          }
           
-          // 3. 뷰(View) 정보가 누락되었는지 확인
+          // 뷰(View) 정보가 없으면 렌더링 에러가 나므로 체크
           if (blockValue.view_ids && Array.isArray(blockValue.view_ids)) {
             blockValue.view_ids = blockValue.view_ids.filter(viewId => {
               const viewExists = !!anyProps.recordMap.collection_view?.[viewId];
-              if (!viewExists) console.warn(`[빌드 알림] 존재하지 않는 뷰 참조 제거: ${viewId}`);
               return viewExists;
             });
+            
+            // 만약 살아남은 뷰가 하나도 없다면 에러 방지를 위해 텍스트로 치환
+            if (blockValue.view_ids.length === 0) {
+              blockValue.type = 'text';
+              blockValue.properties = { title: [['[설정된 데이터베이스 뷰가 없습니다]']] };
+            }
           }
         }
       })
