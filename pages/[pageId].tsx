@@ -51,20 +51,36 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (
         })
       }
 
-      // 2. [최후의 수단] 컬렉션(Collection) 전수 조사 및 삭제
-      // 렌더링 시 참조되는 컬렉션 데이터 자체가 깨져있으면 블록을 고쳐도 터집니다.
-      if (anyProps.recordMap.collection) {
+      // 1. [수리 로직] 컬렉션 정보를 삭제하지 않고 부족한 데이터를 강제로 채워넣습니다.
+      if (anyProps.recordMap?.collection) {
         Object.keys(anyProps.recordMap.collection).forEach((colId) => {
           const colEntry = anyProps.recordMap.collection[colId]
-          const colValue = colEntry?.value
+          
+          // 데이터가 아예 없는 경우 최소 구조 생성
+          if (!colEntry.value) {
+            colEntry.value = {
+              name: [['데이터 로딩 중...']],
+              schema: { title: { name: 'title', type: 'title' } }
+            }
+          } 
+          
+          // schema나 title 설정이 없어서 에러나는 부분만 골라내어 보정
+          if (!colEntry.value.schema) {
+            colEntry.value.schema = { title: { name: 'title', type: 'title' } }
+          } else if (!colEntry.value.schema.title) {
+            colEntry.value.schema.title = { name: 'title', type: 'title' }
+          }
+        })
+      }
 
-          // 컬렉션 정보가 없거나, 스키마(schema)가 없으면 렌더링 시 title 에러의 주범이 됩니다.
-          if (!colEntry || !colValue || !colValue.schema) {
-            console.warn(`[긴급] 깨진 컬렉션 제거로 빌드 우회: ${colId}`)
-            delete anyProps.recordMap.collection[colId] // 참조 연결을 끊어버립니다.
-          } else if (!colValue.schema.title) {
-            // 스키마는 있는데 title 설정이 없는 경우 기본값 주입
-            colValue.schema.title = { name: 'title', type: 'title' }
+      // 2. [추가 방어] 개별 카드(블록)들의 제목 데이터 누락 방어
+      if (anyProps.recordMap?.block) {
+        Object.keys(anyProps.recordMap.block).forEach((id) => {
+          const block = anyProps.recordMap.block[id]?.value
+          // 페이지나 데이터베이스 항목인데 제목이 없으면 터짐 방지
+          if (block && (block.type === 'page' || block.type === 'collection_view_page' || block.type === 'collection_view')) {
+            if (!block.properties) block.properties = {}
+            if (!block.properties.title) block.properties.title = [[' ']]
           }
         })
       }
