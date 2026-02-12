@@ -15,47 +15,70 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (context)
     const anyProps = props as any
 
     if (anyProps.recordMap) {
-      // 1. [ID & 제목 수리] 블록 데이터를 순회하며 클릭과 제목 문제를 동시에 해결합니다.
-      if (anyProps.recordMap.block) {
-        const blocks = anyProps.recordMap.block
-        Object.keys(blocks).forEach((id) => {
-          const block = blocks[id]?.value
-          if (!block) return
+      const { block, collection } = anyProps.recordMap
 
-          // ✅ [클릭 해결] 모든 블록에 ID를 확실히 심어 페이지 이동이 가능하게 합니다.
-          if (!block.id) block.id = id
+      // 1. [최신 이슈 해결] 컬렉션 중첩 구조 보정
+      if (collection) {
+        Object.keys(collection).forEach((colId) => {
+          const colEntry = collection[colId]
+          // 만약 데이터가 value.value 안에 숨어있다면 밖으로 꺼냅니다.
+          if (colEntry?.value?.value) {
+            collection[colId].value = colEntry.value.value
+          }
 
-          // ✅ [제목 해결] 페이지나 카드 형태의 블록인데 제목이 없으면 보정합니다.
-          if (block.type === 'page' || block.type === 'collection_view_page') {
-            if (!block.properties) block.properties = {}
-            
-            // 만약 '이름' 속성 데이터가 title 키에 없다면, 데이터가 들어있는 다른 키를 찾아 복사합니다.
-            if (!block.properties.title || !Array.isArray(block.properties.title)) {
-              const fallbackKey = Object.keys(block.properties).find(key => Array.isArray(block.properties[key]))
-              block.properties.title = fallbackKey ? block.properties[fallbackKey] : [['제목 없음']]
-            }
-
-            // 부모 ID가 없으면 루트 ID를 넣어 구조적 결함을 막습니다.
-            if (!block.parent_id) {
-              block.parent_id = anyProps.site?.rootNotionPageId || ''
-            }
+          const colValue = collection[colId]?.value
+          if (!colValue) return
+          if (!colValue.schema) colValue.schema = {}
+          if (!colValue.schema.title) {
+            colValue.schema.title = { name: 'Title', type: 'title' }
           }
         })
       }
 
-      // 2. [스키마 수리] 데이터베이스 설정(Schema)이 깨져서 카드가 하얗게 나오는 문제를 해결합니다.
-      if (anyProps.recordMap.collection) {
-        Object.keys(anyProps.recordMap.collection).forEach((colId) => {
-          const colValue = anyProps.recordMap.collection[colId]?.value
-          if (colValue) {
-            // 스키마가 아예 없거나 'title' 속성 정의가 없으면 강제로 주입합니다.
-            if (!colValue.schema) {
-              colValue.schema = { title: { name: '이름', type: 'title' } }
-            } else {
-              // '제목' 유형의 속성이 있는지 확인하고, 없으면 title 키를 생성합니다.
-              const hasTitle = Object.values(colValue.schema).some((s: any) => s.type === 'title')
-              if (!hasTitle) {
-                colValue.schema.title = { name: '이름', type: 'title' }
+      // 2. [최신 이슈 해결] 블록 중첩 구조 보정 및 제목/이미지 복구
+      if (block) {
+        Object.keys(block).forEach((id) => {
+          const entry = block[id]
+          
+          // 데이터가 value.value 안에 숨어있다면 밖으로 꺼냅니다.
+          if (entry?.value?.value) {
+            block[id].value = entry.value.value
+          }
+
+          const b = block[id]?.value
+          if (!b) {
+            delete block[id]
+            return
+          }
+
+          if (!b.id) b.id = id
+
+          // 자식 블록 필터링
+          if (Array.isArray(b.content)) {
+            b.content = b.content.filter(
+              (childId) => typeof childId === 'string' && !!block[childId]
+            )
+          }
+
+          // 제목 데이터 복구 (properties.title이 비어있을 때 다른 속성에서 가져오기)
+          if ((b.type === 'page' || b.type === 'collection_view_page')) {
+            if (!b.properties) b.properties = {}
+            
+            if (!b.properties.title || b.properties.title.length === 0) {
+              // 한글 제목 등이 담긴 다른 속성이 있는지 확인
+              const fallbackKey = Object.keys(b.properties).find(k => Array.isArray(b.properties[k]) && b.properties[k].length > 0)
+              b.properties.title = fallbackKey ? b.properties[fallbackKey] : [['제목 없음']]
+            }
+
+            // [이미지] 본문 첫 이미지를 카드 커버로 강제 할당
+            if (b.content && !b.format?.page_cover) {
+              const firstImgId = b.content.find(cId => block[cId]?.value?.type === 'image')
+              if (firstImgId) {
+                const imgSource = block[firstImgId]?.value?.properties?.source?.[0]?.[0]
+                if (imgSource) {
+                  if (!b.format) b.format = {}
+                  b.format.page_cover = imgSource
+                }
               }
             }
           }
@@ -63,14 +86,13 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (context)
       }
     }
 
-    // 3. [에러 방지] 모든 undefined를 null로 바꿔서 빌드 멈춤 현상을 방지합니다.
-    const cleanProps = JSON.parse(
-      JSON.stringify(props, (key, value) => (value === undefined ? null : value))
+    const safeProps = JSON.parse(
+      JSON.stringify(props, (key, value) =>
+        value === undefined ? null : value
+      )
     )
 
-    return {
-      props: cleanProps
-    }
+    return { props: safeProps }
   } catch (err) {
     console.error('page error', domain, rawPageId, err)
     throw err
@@ -78,49 +100,23 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (context)
 }
 
 export async function getStaticPaths() {
-  /*if (isDev) {
-    return {
-      paths: [],
-      fallback: false
-    }
-  }*/
-
   const siteMap = await getSiteMap()
-
   const staticPaths = {
     paths: Object.keys(siteMap.canonicalPageMap).map((pageId) => ({
-      params: {
-        pageId
-      }
+      params: { pageId }
     })),
-    // paths: [],
-    // ✅ 정적 배포에서는 반드시 false여야 하며, 
-    // 위 paths에 모든 페이지 ID가 포함되어 있어야 합니다.
     fallback: false
   }
-
-  console.log(`빌드 대상 페이지 개수: ${staticPaths.paths.length}`)
   return staticPaths
 }
-
-/*export async function getStaticPaths() {
-  // 1. 빌드 시 모든 페이지 주소를 계산(getSiteMap)하지 않도록 설정합니다.
-  // 2. paths를 빈 배열([])로 두면 빌드 시간이 획기적으로 줄어듭니다.
-  // 3. fallback을 'blocking'으로 설정하면, 사용자가 접속하는 순간 노션에서 데이터를 가져옵니다.
-  
-  return {
-    paths: [],
-    fallback: 'blocking' 
-  }
-}*/
 
 export default function NotionDomainDynamicPage(props) {
   return (
     <>
-      <TableOfContents /> {/* ✅ 그대로 두기 (자동 이동됨) */}
+      <TableOfContents />
       <NotionPage {...props} />
     </>
-  );
+  )
 }
 
 
