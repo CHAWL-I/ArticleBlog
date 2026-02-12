@@ -7,9 +7,7 @@ import { getSiteMap } from '@/lib/get-site-map'
 import { resolveNotionPage } from '@/lib/resolve-notion-page'
 import { type PageProps, type Params } from '@/lib/types'
 
-export const getStaticProps: GetStaticProps<PageProps, Params> = async (
-  context
-) => {
+export const getStaticProps: GetStaticProps<PageProps, Params> = async (context) => {
   const rawPageId = context.params.pageId as string
 
   try {
@@ -17,76 +15,55 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async (
     const anyProps = props as any
 
     if (anyProps.recordMap) {
-      // 1. 블록(Blocks) 순회 및 방어
+      // 1. [ID & 제목 수리] 블록 데이터를 순회하며 클릭과 제목 문제를 동시에 해결합니다.
       if (anyProps.recordMap.block) {
         const blocks = anyProps.recordMap.block
         Object.keys(blocks).forEach((id) => {
-          const blockEntry = blocks[id]
-          const blockValue = blockEntry?.value
+          const block = blocks[id]?.value
+          if (!block) return
 
-          if (!blockEntry || !blockValue) {
-            delete blocks[id]
-            return
-          }
+          // ✅ [클릭 해결] 모든 블록에 ID를 확실히 심어 페이지 이동이 가능하게 합니다.
+          if (!block.id) block.id = id
 
-          if (!blockValue.id) blockValue.id = id
-          if (!blockValue.parent_id) {
-            blockValue.parent_id = anyProps.site?.rootNotionPageId || ''
-          }
-
-          // 자식 블록 필터링
-          if (Array.isArray(blockValue.content)) {
-            blockValue.content = blockValue.content.filter((childId) => {
-              return childId && blocks[childId] && blocks[childId].value
-            })
-          }
-
-          // 속성 및 제목 방어
-          if (!blockValue.properties) {
-            blockValue.properties = {}
-          }
-          if (!blockValue.properties.title || !Array.isArray(blockValue.properties.title)) {
-            blockValue.properties.title = [[' ']]
-          }
-        })
-      }
-
-      // 1. [수리 로직] 컬렉션 정보를 삭제하지 않고 부족한 데이터를 강제로 채워넣습니다.
-      if (anyProps.recordMap?.collection) {
-        Object.keys(anyProps.recordMap.collection).forEach((colId) => {
-          const colEntry = anyProps.recordMap.collection[colId]
-          
-          // 데이터가 아예 없는 경우 최소 구조 생성
-          if (!colEntry.value) {
-            colEntry.value = {
-              name: [['데이터 로딩 중...']],
-              schema: { title: { name: 'title', type: 'title' } }
-            }
-          } 
-          
-          // schema나 title 설정이 없어서 에러나는 부분만 골라내어 보정
-          if (!colEntry.value.schema) {
-            colEntry.value.schema = { title: { name: 'title', type: 'title' } }
-          } else if (!colEntry.value.schema.title) {
-            colEntry.value.schema.title = { name: 'title', type: 'title' }
-          }
-        })
-      }
-
-      // 2. [추가 방어] 개별 카드(블록)들의 제목 데이터 누락 방어
-      if (anyProps.recordMap?.block) {
-        Object.keys(anyProps.recordMap.block).forEach((id) => {
-          const block = anyProps.recordMap.block[id]?.value
-          // 페이지나 데이터베이스 항목인데 제목이 없으면 터짐 방지
-          if (block && (block.type === 'page' || block.type === 'collection_view_page' || block.type === 'collection_view')) {
+          // ✅ [제목 해결] 페이지나 카드 형태의 블록인데 제목이 없으면 보정합니다.
+          if (block.type === 'page' || block.type === 'collection_view_page') {
             if (!block.properties) block.properties = {}
-            if (!block.properties.title) block.properties.title = [[' ']]
+            
+            // 만약 '이름' 속성 데이터가 title 키에 없다면, 데이터가 들어있는 다른 키를 찾아 복사합니다.
+            if (!block.properties.title || !Array.isArray(block.properties.title)) {
+              const fallbackKey = Object.keys(block.properties).find(key => Array.isArray(block.properties[key]))
+              block.properties.title = fallbackKey ? block.properties[fallbackKey] : [['제목 없음']]
+            }
+
+            // 부모 ID가 없으면 루트 ID를 넣어 구조적 결함을 막습니다.
+            if (!block.parent_id) {
+              block.parent_id = anyProps.site?.rootNotionPageId || ''
+            }
+          }
+        })
+      }
+
+      // 2. [스키마 수리] 데이터베이스 설정(Schema)이 깨져서 카드가 하얗게 나오는 문제를 해결합니다.
+      if (anyProps.recordMap.collection) {
+        Object.keys(anyProps.recordMap.collection).forEach((colId) => {
+          const colValue = anyProps.recordMap.collection[colId]?.value
+          if (colValue) {
+            // 스키마가 아예 없거나 'title' 속성 정의가 없으면 강제로 주입합니다.
+            if (!colValue.schema) {
+              colValue.schema = { title: { name: '이름', type: 'title' } }
+            } else {
+              // '제목' 유형의 속성이 있는지 확인하고, 없으면 title 키를 생성합니다.
+              const hasTitle = Object.values(colValue.schema).some((s: any) => s.type === 'title')
+              if (!hasTitle) {
+                colValue.schema.title = { name: '이름', type: 'title' }
+              }
+            }
           }
         })
       }
     }
 
-    // 3. 모든 undefined를 null로 세척 (JSON 직렬화 에러 방지)
+    // 3. [에러 방지] 모든 undefined를 null로 바꿔서 빌드 멈춤 현상을 방지합니다.
     const cleanProps = JSON.parse(
       JSON.stringify(props, (key, value) => (value === undefined ? null : value))
     )
