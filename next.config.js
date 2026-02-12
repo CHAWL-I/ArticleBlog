@@ -21,7 +21,7 @@ export default withBundleAnalyzer({
     ignoreBuildErrors: true,
   },
   
-  staticPageGenerationTimeout: 300,
+  staticPageGenerationTimeout: 1000,
   images: {
     // 2. 정적 배포(export) 시에는 Next.js 자체 이미지 최적화 기능을 쓸 수 없으므로 비활성화합니다.
     unoptimized: true, 
