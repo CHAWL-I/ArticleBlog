@@ -14,7 +14,7 @@ export default siteConfig({
   author: 'Hyeonji Chae',
 
   // open graph metadata (optional)
-  description: '채우고 기록하다',
+  description: '채우고 기록하다.',
 
   // social usernames (optional)
   //twitter: 'transitive_bs',
