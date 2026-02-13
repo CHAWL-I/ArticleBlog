@@ -8,9 +8,9 @@ import { type PageProps, type Params } from '@/lib/types'
 
 // 1. 헤더에서 정의하신 슬러그 맵 (통역기)
 const navigationMap: Record<string, string> = {
-  '19ff3422532d8077b9a8c28bf15c1395': 'aboutme',
   '19ff3422532d8046b758d593a45594a5': 'project',
-  '19ff3422532d80b6b991e9459ddd4927': 'blog'
+  '19ff3422532d80b6b991e9459ddd4927': 'blog',
+  '306f3422532d80acac71f06797b16a61': 'archive'
 }
 
 const inverseMap = Object.fromEntries(

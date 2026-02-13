@@ -530,12 +530,23 @@
 
 
 /*리스트 스타일 재정비*/
-.notion-list-item-property .notion-property-title {
+.notion-list-item-title .notion-property-title {
   display: none !important;
+}
+
+/* ✅ 두 번째 셀렉터 경로를 저격하여 아이콘과 공간 모두 제거 */
+.notion-list-item-body .notion-list-item-property .notion-page-icon-inline {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .notion-list-item {
   height: 128px !important;
+  margin: 8px 0;
+  padding: 0;
 }
 
 /* 1. 리스트 뷰에서 숨겨진 페이지 아이콘(이모지) 강제로 보이게 하기 */
@@ -1682,7 +1693,7 @@ nav.top-toc:empty {
   }
 
   /* ✅ 첫 번째 요소(HOME)를 제외한 나머지 span 메뉴들 숨김 */
-  .notion-custom-nav span.breadcrumb.button:not(:first-child) {
+  .notion-custom-nav a.breadcrumb.button:not(:first-child) {
     display: none !important;
   }
 
@@ -1699,7 +1710,7 @@ nav.top-toc:empty {
   }
 
   /* ✅ 모든 span 메뉴 다시 보이기 */
-  .notion-custom-nav span.breadcrumb.button {
+  .notion-custom-nav a.breadcrumb.button {
     display: inline-flex !important;
   }
 
