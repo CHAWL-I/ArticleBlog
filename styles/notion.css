@@ -452,6 +452,13 @@
 }
 
 /*표 스타일 재정비*/
+.notion-collection, 
+.notion-collection-page-properties {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden; /* 영역 밖으로 나가는 것 방지 */
+}
+
 .notion-table {
   max-width: 1000px !important; /* 원하는 최대 너비로 조정하세요 */
   margin: 0 auto !important;    /* 중앙 정렬 */
@@ -1666,43 +1673,42 @@ nav.top-toc:empty {
   border-radius: 2px;
   transition: width 0.3s ease;
 }
-
-/* 📌 반응형 - 모바일 */
+/* 📌 반응형 - 모바일 (479px 이하) */
 @media (max-width: 479px) {
 
-  /* 📌 HOME 메뉴는 유지 */
+  /* HOME 메뉴를 담은 컨테이너 유지 */
   .notion-custom-nav {
-    display: flex;
+    display: flex !important;
   }
 
-  /* 📌 HOME 외의 메뉴는 숨김 */
-  .notion-custom-nav a:not(:first-child) {
-    display: none;
+  /* ✅ 첫 번째 요소(HOME)를 제외한 나머지 span 메뉴들 숨김 */
+  .notion-custom-nav span.breadcrumb.button:not(:first-child) {
+    display: none !important;
   }
 
-  /* 📌 햄버거 버튼 보이기 */
+  /* 햄버거 버튼 보이기 */
   .hamburger-btn {
-    display: flex;
+    display: flex !important;
   }
 }
 
-/* 📌 반응형 - 데스크탑 뷰 */
+/* 📌 반응형 - 데스크탑 뷰 (480px 이상) */
 @media (min-width: 480px) {
   .notion-custom-nav {
-    display: flex; /* ✅ 데스크탑에서 메뉴 보이기 */
+    display: flex !important;
   }
 
-  /* ✅ HOME 외 메뉴를 보이도록 수정 */
-  .notion-custom-nav a:not(:first-child) {
-    display: flex !important; /* ✅ 강제 적용 */
+  /* ✅ 모든 span 메뉴 다시 보이기 */
+  .notion-custom-nav span.breadcrumb.button {
+    display: inline-flex !important;
   }
 
   .mobile-nav.open {
-    display: none; /* ✅ 데스크탑에서 모바일 메뉴 숨김 */
+    display: none !important;
   }
 
   .hamburger-btn {
-    display: none; /* ✅ 데스크탑에서는 햄버거 버튼 숨김 */
+    display: none !important;
   }
 }
 
