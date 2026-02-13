@@ -598,6 +598,69 @@ img.notion-page-title-icon {
 }
 
 
+/*갤러리 카드 사용 안함 - 페이지 아이콘 확대*/
+/* 1. 카드 배경이 없는(None) 갤러리 항목만 타겟팅 */
+.notion-collection-card:not(:has(.notion-collection-card-cover)) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important; /* 아이콘과 텍스트 중앙 정렬 */
+  padding: 0px !important;
+  gap: 15px !important;
+}
+
+/* 2. 페이지 링크 안의 아이콘 컨테이너를 크게 확대 */
+.notion-collection-card:not(:has(.notion-collection-card-cover)) .notion-page-icon-inline {
+  display: flex !important;
+  width: 196px !important;  /* 아이콘 크기 조절 */
+  height: 196px !important;
+  margin: 0 auto !important;
+}
+
+/* 3. 아이콘 이미지 자체가 영역을 꽉 채우도록 설정 */
+.notion-collection-card:not(:has(.notion-collection-card-cover)) .notion-page-icon-inline img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* 4. 아이콘 아래로 제목 텍스트 배치 */
+.notion-collection-card:not(:has(.notion-collection-card-cover)) .notion-page-title-text {
+  font-size: 1rem !important;
+  text-align: center !important;
+  margin-left: 0 !important;
+}
+
+/* 1. 아이콘과 텍스트를 세로로 쌓기 */
+.notion-collection-card-body .notion-page-title {
+  display: flex !important;
+  flex-direction: column !important; /* 가로에서 세로로 변경 */
+  align-items: center !important;    /* 중앙 정렬 */
+  gap: 15px !important;              /* 아이콘과 글자 사이 간격 */
+  width: 100% !important;
+}
+
+/* 2. 아이콘 컨테이너 크기 대폭 확대 */
+.notion-collection-card-body .notion-page-icon-inline {
+  width: 120px !important;  /* 원하는 크기로 조절 */
+  height: 120px !important;
+  margin: 0 !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 3. 아이콘 이미지 자체가 박스에 꽉 차도록 설정 */
+.notion-collection-card-body .notion-page-icon-inline img,
+.notion-collection-card-body .notion-page-icon-inline .notion-page-icon-image {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: contain !important; /* 아이콘 모양 유지하며 확대 */
+}
+
+
+
 /*갤러리*/
 
 .notion-page-content-inner .notion-gallery-grid {
