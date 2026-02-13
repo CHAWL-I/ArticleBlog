@@ -451,6 +451,117 @@
   object-fit: cover;
 }
 
+/*표 스타일 재정비*/
+.notion-table {
+  max-width: 1000px !important; /* 원하는 최대 너비로 조정하세요 */
+  margin: 0 auto !important;    /* 중앙 정렬 */
+  width: 100% !important;
+}
+
+.notion-table-header, .notion-table-header-placeholder {
+  display: none;
+}
+
+.notion-table-view {
+  padding: 0 !important;
+  width: 100%;
+  min-width: 0 !important;
+}
+
+.notion-table-body {
+  min-width: 0 !important;
+}
+
+/* 1. 행 구조를 가로(row)에서 세로(column)로 변경 */
+.notion-table-body .notion-table-row {
+  display: flex !important;
+  flex-direction: column !important; /* 위아래로 쌓이게 설정 */
+  align-items: flex-start !important; /* 왼쪽 정렬 */
+  padding: 8px 0 !important;        /* 행 사이의 간격 조절 */
+  height: auto !important;           /* 높이 자동 조절 */
+  border-bottom: 1px solid #efefef;  /* 행 구분선 (선택 사항) */
+}
+
+.notion-table-cell {
+  border-right: 0;
+  line-height: 1;
+  padding: 0;
+}
+
+.notion-table-cell-title {
+  font-size: 1rem;
+  width: 100% !important;
+  padding: 4px 0 0;
+}
+
+.notion-table-cell-date {
+  justify-content: flex-end !important; /* 내부 콘텐츠를 오른쪽 끝으로 밀기 */
+  text-align: left !important;         /* 텍스트 자체도 우측 정렬 */
+  min-height: 0;
+  padding: 4px 0 8px 0;
+}
+
+.notion-table-cell-multi_select {
+  width: 80px !important;
+}
+
+.notion-table-cell .notion-property-multi_select-item {
+  
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 16px;
+}
+
+
+.notion-table-cell .notion-page-link {
+  margin: 0;
+}
+
+.notion-table-cell .notion-page-link .notion-page-title-text {
+  border-bottom: 0;
+}
+
+
+/*리스트 스타일 재정비*/
+.notion-list-item-property .notion-property-title {
+  display: none !important;
+}
+
+.notion-list-item {
+  height: 128px !important;
+}
+
+/* 1. 리스트 뷰에서 숨겨진 페이지 아이콘(이모지) 강제로 보이게 하기 */
+.notion-list-item .notion-page-icon-inline {
+  display: inline-flex !important; /* 숨겨진 아이콘을 강제로 표시 */
+  margin-right: 10px !important;   /* 아이콘과 제목 사이 간격 */
+  width: 128px !important;          /* 아이콘 크기 고정 */
+  height: 128px !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.notion-page-icon-inline {
+  max-width: none;
+  max-height: none;
+}
+
+/* 2. 아이콘과 제목 텍스트 세로 정렬 맞추기 */
+.notion-list-item-title {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.notion-page-title-icon {
+  width: 128px;
+  height: 128px;
+}
+
+img.notion-page-title-icon {
+  border-radius: 32px;
+}
+
+
 .notion-page-content-inner .notion-gallery-grid {
   grid-template-columns: repeat(auto-fill, minmax(256px,1fr));
   max-width: 100%; /* ✅ notion-page-content-inner에 맞춤 */
@@ -530,7 +641,7 @@
 
 .notion-collection-card-cover {
   border-radius: 16px;
-  box-shadow: 0px 0px 3px 3px rgba(15, 15, 15, 0.06);
+  box-shadow: none;
   background-color: rgb(255, 255, 255, 1);
   display: flex;
   flex-direction: column;

@@ -17,12 +17,12 @@ export function TagLink({ href, children, ...props }: any) {
   const isSelected = currentPageId && linkPageId && currentPageId === linkPageId
 
   return (
-    <a
+    <span
       href={href}
       {...props}
       className={`${props.className || ''} ${isSelected ? 'notion-link-selected' : ''}`}
     >
       {children}
-    </a>
+    </span>
   )
 }
