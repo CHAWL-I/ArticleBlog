@@ -547,12 +547,13 @@
   height: 128px !important;
   margin: 8px 0;
   padding: 0;
+  justify-content: left;
 }
 
 /* 1. 리스트 뷰에서 숨겨진 페이지 아이콘(이모지) 강제로 보이게 하기 */
 .notion-list-item .notion-page-icon-inline {
   display: inline-flex !important; /* 숨겨진 아이콘을 강제로 표시 */
-  margin-right: 10px !important;   /* 아이콘과 제목 사이 간격 */
+  margin: 0 !important;   /* 아이콘과 제목 사이 간격 */
   width: 128px !important;          /* 아이콘 크기 고정 */
   height: 128px !important;
   align-items: center;
@@ -575,10 +576,29 @@
   height: 128px;
 }
 
+.notion-page-title-text {
+  border-bottom: 0;
+  font-size: 1rem;
+}
+
 img.notion-page-title-icon {
   border-radius: 32px;
 }
 
+.notion-list-item-property .notion-property-date {
+  font-size: 0.7rem;
+}
+
+/* 1. 속성들을 감싸는 부모 컨테이너를 세로 정렬로 변경 */
+.notion-list-item-body {
+  display: flex !important;
+  flex-direction: column !important; /* 가로에서 세로로 변경 */
+  align-items: flex-start !important; /* 왼쪽 정렬 유지 */
+  gap: 4px !important; /* 속성 사이의 세로 간격 조절 */
+}
+
+
+/*갤러리*/
 
 .notion-page-content-inner .notion-gallery-grid {
   grid-template-columns: repeat(auto-fill, minmax(256px,1fr));
