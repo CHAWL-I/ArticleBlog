@@ -630,33 +630,51 @@ img.notion-page-title-icon {
   margin-left: 0 !important;
 }
 
-/* 1. 아이콘과 텍스트를 세로로 쌓기 */
-.notion-collection-card-body .notion-page-title {
+.notion-collection-card-body .notion-collection-card-property {
+  padding: 0 !important;
+}
+
+/* 2. 커버 이미지가 없는(None) 카드 내의 속성만 중앙 정렬 */
+.notion-collection-card:not(:has(.notion-collection-card-cover)) .notion-collection-card-body .notion-collection-card-property > span {
+  display: block !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+/* 추가로 속성 부모 박스 자체도 중앙 정렬 확인 */
+.notion-collection-card:not(:has(.notion-collection-card-cover)) .notion-collection-card-property {
   display: flex !important;
-  flex-direction: column !important; /* 가로에서 세로로 변경 */
-  align-items: center !important;    /* 중앙 정렬 */
-  gap: 15px !important;              /* 아이콘과 글자 사이 간격 */
+  justify-content: center !important;
   width: 100% !important;
 }
 
-/* 2. 아이콘 컨테이너 크기 대폭 확대 */
-.notion-collection-card-body .notion-page-icon-inline {
-  width: 120px !important;  /* 원하는 크기로 조절 */
+/* 1. 커버 이미지가 없는 카드 내부의 타이틀만 세로로 쌓기 */
+.notion-collection-card:not(:has(.notion-collection-card-cover)) .notion-page-title {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 15px !important;
+  width: 100% !important;
+}
+
+/* 2. 커버 이미지가 없는 카드의 아이콘 컨테이너만 확대 */
+.notion-collection-card:not(:has(.notion-collection-card-cover)) .notion-page-icon-inline {
+  width: 120px !important;
   height: 120px !important;
   margin: 0 !important;
   display: flex !important;
-  justify-content: center;
-  align-items: center;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
-/* 3. 아이콘 이미지 자체가 박스에 꽉 차도록 설정 */
-.notion-collection-card-body .notion-page-icon-inline img,
-.notion-collection-card-body .notion-page-icon-inline .notion-page-icon-image {
+/* 3. 해당 아이콘 이미지 확대 설정 */
+.notion-collection-card:not(:has(.notion-collection-card-cover)) .notion-page-icon-inline img,
+.notion-collection-card:not(:has(.notion-collection-card-cover)) .notion-page-icon-inline .notion-page-icon-image {
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
-  object-fit: contain !important; /* 아이콘 모양 유지하며 확대 */
+  object-fit: contain !important;
 }
 
 
@@ -667,7 +685,7 @@ img.notion-page-title-icon {
   grid-template-columns: repeat(auto-fill, minmax(256px,1fr));
   max-width: 100%; /* ✅ notion-page-content-inner에 맞춤 */
   gap: 3vmin;
-  row-gap: 5vmin;
+  row-gap: 3vmin;
   justify-content: center;
   align-items: start;
   padding-left: 4px;
