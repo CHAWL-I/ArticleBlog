@@ -12,6 +12,9 @@
 
 .notion {
   --notion-max-width: 720px;
+  --notion-max-width-page: 968px;
+  --notion-max-width-page-inner: 632px;
+  --notion-min-width-page-has-aside: 888px;
   --notion-header-height: 50px;
   font-family: var(--font-primary) !important;
 }
@@ -38,16 +41,16 @@
 .notion-page {
   padding-bottom: calc(max(5vh, 32px)) !important;
   line-height: 1.75;
-  max-width: 1100px; /* 원하는 최대 너비 */
+  max-width: 968px;
   width: 100%;
   margin: 0 auto; /* ✅ 중앙 정렬 */
   /* padding: 0 20px; /* 좌우 여백 추가 */ 
 }
 
 .notion-page-scroller {
-  max-width: 1100px;
+  max-width: 1024px;
   width: 100%;
-  margin: 0 auto; /* ✅ 중앙 정렬 */
+  /*margin: 0 auto; /* ✅ 중앙 정렬 */
   margin-top: calc(1.5 * var(--notion-header-height)) !important;
   padding: 0 20px;
   overflow-x: hidden;
@@ -81,23 +84,23 @@
   flex-direction: column;
 }
 
-/* 아이콘이 없고 페이지 커버도 없는 경우. 리스트 페이지 */
-/* 📌 최종 해결 코드: Has 선택자 활용 (가장 확실함) */
-/* .notion-page-scroller가 '아이콘 없는 페이지'를 자식으로 가졌을 때, 
-내부의 top-toc을 숨김 */
-.notion-page-scroller:has(.notion-page-no-icon) .top-toc,
-.notion-page-scroller:has(.notion-page-no-icon) .notion-top-toc {
-  display: none !important;
+.notion-page-has-cover {
+  padding-top: 144px;
 }
-
 
 /* 아이콘이 없지만, 페이지 커버는 있을 경우. project 페이지 */
-.notion-page.notion-page-has-cover.notion-page-no-icon {
-  padding-top: 0px;
-}
 
 .notion-page.notion-page-has-cover.notion-page-no-icon .notion-title {
-  font-size: 2.5rem;
+  display: block !important;
+  text-align: center !important; /* 1. 텍스트 자체를 중앙으로 */
+  width: 100% !important;
+  max-width: var(--notion-max-width-page-inner) !important;
+  
+  /* 2. 블록 자체를 중앙으로 밀기 (핵심) */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  
+  padding: 0 16px;
 }
 
 .notion-page.notion-page-no-cover.notion-page-no-icon.notion-page-has-text-icon {
@@ -139,7 +142,7 @@
   justify-content: center;
   align-items: flex-start;
   gap: 32px;
-  max-width: 1100px;
+  max-width: var(--notion-max-width-page);
   width: 100%;
   margin: 0 auto;
   padding: 16px 16px 64px 16px;
@@ -162,7 +165,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1100px;
+  max-width: var(--notion-max-width-page);
   width: 100%;
   margin: 0 auto;
   padding: 16px;
@@ -277,6 +280,16 @@
   color: var(--fg-color-3);
   transition: color 0.3s ease;
   font-weight: normal;
+
+  /* 1. 패딩 하단을 늘려 선과 글자 사이 간격 확보 */
+  padding: 4px 4px 4px 4px !important; 
+  margin: 8px 4px !important;
+  display: inline-flex !important;
+  align-items: center;
+
+  /* 2. 핵심: 투명한 선을 미리 그려서 높이를 고정 (덜덜거림 방지) */
+  border-bottom: 2px solid transparent !important;
+  box-sizing: border-box !important;
 }
 
 /* ✅ 1. 홈 버튼 전용: 글자는 숨기고 아이콘만 노출 */
@@ -306,14 +319,17 @@
 }
 
 .breadcrumb.button:hover {
-  color: var(--select-color-0) !important;
+  color: var(--fg-color) !important;
 }
 
 /* ✅ 선택된 메뉴 항목 스타일 */
 .breadcrumb.button.selected {
-  color: var(--select-color-0);
-  border-bottom: 2px solid var(--select-color-0);
-  margin-bottom: -2px;
+  color: var(--fg-color);
+  border-bottom-color: var(--notion-red) !important;
+}
+
+.breadcrumb.button.selected .page-title {
+  font-weight: 500;
 }
 
 .notion-header .breadcrumb {
@@ -327,8 +343,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  max-width: 1100px !important;
+  padding: 1rem !important;
+  /*max-width: var(--notion-max-width-page); /*지울지 고민*/
   margin: 0 auto;
   overflow: visible;
 }
@@ -349,7 +365,7 @@
   opacity: 0;
   pointer-events: none;
   flex-direction: column;
-  padding: 0 24px;
+  padding: 0 30px;
 }
 
 
@@ -359,6 +375,7 @@
   transform: translateY(0);
   opacity: 1;
   pointer-events: auto;
+  padding-bottom: 16px;
 }
 
 .mobile-nav a {
@@ -729,7 +746,6 @@ img.notion-page-title-icon {
   padding: 8px;
   height: 1.33rem;
   border-radius: 8px;
-  margin-top: 4px;
 }
 
 /* 카드 내 태그 중 색상 없는 빈 정보값 숨김처리*/
@@ -953,6 +969,28 @@ img.notion-page-title-icon {
   justify-content: center;
 }
 
+.notion-collection-row-body {
+  display: flex;
+  justify-content: center;
+}
+
+/* 1. 오직 페이지 상단 속성 영역의 바디만 타겟팅 */
+.notion-collection-page-properties .notion-collection-row-body {
+  display: flex !important;
+  flex-direction: row !important; /* 세로에서 가로 배치로 변경 */
+  flex-wrap: wrap !important;     /* 개수가 많으면 다음 줄로 넘기기 */
+  gap: 12px !important;           /* 속성 사이의 간격 */
+  align-items: center !important;
+}
+
+/* 2. 각 속성 아이템 정렬 및 여백 조정 */
+.notion-collection-page-properties .notion-collection-row-property {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;           /* 기존 세로형 여백 제거 */
+  border: none !important;        /* 필요 시 구분선 제거 */
+}
+
 .notion-collection-row-value {
   display: flex;
   align-items: center;
@@ -1171,6 +1209,7 @@ img.notion-page-title-icon {
 .notion-page-icon-hero.notion-page-icon-image {
   border-radius: 50%;
   box-shadow: 0 8px 16px 0 rgb(0 0 0 / 21%);
+  top: 0 !important;
 }
 .notion-page-icon-hero.notion-page-icon-image span,
 .notion-page-icon-hero.notion-page-icon-image img {
@@ -1338,7 +1377,7 @@ img.notion-page-title-icon {
 
 .notion-list-numbered {
   list-style-type: none !important; 
-  padding-inline-start: 1em;
+  padding-inline-start: 0em;
 }
 
 /* ✅ 리스트 아이템(각 li 요소) */
@@ -1375,7 +1414,8 @@ img.notion-page-title-icon {
 
 .notion-list-disc {
   list-style-type: none;
-  padding-inline-start: 1em;
+  padding-inline-start: 0em;
+  min-height: 1.5em;
 }
 
 .notion-list-disc li {
@@ -1386,11 +1426,12 @@ img.notion-page-title-icon {
 .notion-list-disc > li::before {
   content: "●"; /* 채워진 동그라미 */
   position: absolute;
-  left: -8px;
-  top: 9px;
-  font-size: .4em;
+  left: -1em;
+  top: 1.25em;
+  font-size: 0.4em;
   color: var(--fg-color);
   padding-left: 8px;
+  height: 1.5em; /* 줄 높이에 맞춰 중앙 정렬 보조 */
 }
 
 /* 2단계: ○ (연한 동그라미) */
@@ -1413,7 +1454,7 @@ img.notion-page-title-icon {
 
 /* ✅ 리스트 안에 `div.notion-text`가 있을 경우에도 적용 */
 .notion-list-disc li > div.notion-text {
-  display: inline-block;
+  display: inline !important; /* block 속성을 완전히 제거하여 흐름을 방해하지 않음 */
 }
 
 /* 🔹 목차(TOC) 전체 컨테이너 스타일 */
@@ -1432,6 +1473,32 @@ img.notion-page-title-icon {
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
   z-index: 100 !important; /* 다른 요소 위에 표시 */
+}
+
+/* [기존 코드] 사이드바 항목 없을 때 레이아웃 초기화 */
+.notion-page-content-has-aside:has(.notion-aside:empty),
+.notion-page-content-has-aside:has(.notion-table-of-contents-block:empty),
+.notion-page-content-has-aside:not(:has(.notion-table-of-contents-item)) {
+  display: block !important;
+}
+
+.notion-page-content-has-aside:has(.notion-aside:empty) .notion-page-content-inner,
+.notion-page-content-has-aside:not(:has(.notion-table-of-contents-item)) .notion-page-content-inner {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.notion-aside:empty,
+.notion-aside:not(:has(.notion-table-of-contents-item)) {
+  display: none !important;
+}
+
+/* [추가 코드] 사이드바 항목 없을 때 상단 목차(top-toc)도 숨김 */
+/* 구조상 상위 요소인 notion-page-scroller를 기준으로 감지합니다 */
+.notion-page-scroller:not(:has(.notion-table-of-contents-item)) .top-toc {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 /* 1300px 이하에서 표시할 Top Tab 스타일. */
@@ -1490,13 +1557,13 @@ img.notion-page-title-icon {
   flex-direction: column;
   flex: 1; /* 남은 공간 차지 */
   overflow: hidden;
-  gap: 2px;
+  gap: 3px;
 }
 
 .toc-parent {
   display: block !important; /* 글자 영역확보*/
-  font-size: 14px !important;
-  color: var(--fg-color-3) !important;
+  font-size: 0.7rem !important;
+  color: var(--notion-red) !important;
   height: 16px;
   white-space: nowrap; /* ✅ 한 줄로 유지 */
   overflow: hidden !important;
@@ -1505,15 +1572,16 @@ img.notion-page-title-icon {
 
 .toc-current {
   display: inline-block !important; /* block 제거 */
-  font-size: 18px !important;
+  font-size: 0.8rem !important;
   font-weight: bold;
-  color: var(--select-color-0) !important;
+  color: var(--fg-color) !important;
   white-space: nowrap; /* ✅ 한 줄로 유지 */
   overflow: hidden !important;
   text-overflow: ellipsis; /* ✅ 줄임표(...) 표시 */
   width: 99%;
   flex: 1; /* 남은 공간을 차지하여 아이콘을 우측으로 밀어냄 */
   margin-right: 8px; /* 아이콘과의 간격 */
+  font-style: italic;
 }
 
 .toc-content-wrapper > .toc-link:first-child {
@@ -1624,7 +1692,7 @@ img.notion-page-title-icon {
 
 /* ✅ 현재 위치 파란색 표시 */
 .toc-dropdown-item.active {
-  color: var(--select-color-0) !important;
+  color: var(--fg-color) !important;
   font-weight: bold;
   background-color: var(--fg-color-1);
   opacity: 1 !important;
@@ -1647,7 +1715,6 @@ nav.top-toc:empty {
 
 /* 🔹 기존 콘텐츠에 여백 추가 (TOC가 고정되었으므로) */
 .notion-page {
-  padding-top: 50px; /* TOC 높이만큼 추가 여백 */
   padding-left: 0;
   padding-right: 0;
 }
@@ -1694,7 +1761,7 @@ nav.top-toc:empty {
 .notion-aside-table-of-contents {
   width: 224px;
   max-width: 224px;
-  max-height: 65vh !important; /*목차 최대 높이를 화면 높이의 70%로 제한*/
+  max-height: 55vh !important; /*목차 최대 높이를 화면 높이의 70%로 제한*/
   scrollbar-width: thin;
   border-radius: 0px;
 
@@ -1750,10 +1817,6 @@ nav.top-toc:empty {
   border-bottom: 1px solid #ddd;
 }
 
-.notion-page.notion-page-has-cover.notion-page-no-icon.notion-page-has-text-icon.notion-full-page 
-.notion-text {
-  color: var(--bg-color);
-}
 
 .tag-button {
   background: none;
@@ -1841,7 +1904,7 @@ nav.top-toc:empty {
 }
 
 /* 📌 480px ~ 720px (태블릿) */
-@media (min-width: 480px) and (max-width: 720px) {
+@media (min-width: 480px) and (max-width: 632px) {
   .notion-page-content {
     flex-direction: column;
     align-items: center;
@@ -1858,7 +1921,7 @@ nav.top-toc:empty {
 }
 
 /* 📌 720px ~ 1100px (태블릿 가로) */
-@media (min-width: 720px) and (max-width: 1100px) {
+@media (min-width: 632px) and (max-width: 968px) {
   .notion-page-content {
     flex-direction: column;
     align-items: center;
@@ -1870,7 +1933,7 @@ nav.top-toc:empty {
 
   /* ✅ 본문 컨텐츠 영역 너비 제한 및 중앙 정렬 */
   .notion-page.notion-page-no-cover.notion-page-has-icon .notion-page-content {
-    max-width: 720px !important;
+    max-width: var(--notion-max-width-page-inner) !important;
     margin-left: auto !important;
     margin-right: auto !important;
     width: 100% !important;
@@ -1879,17 +1942,18 @@ nav.top-toc:empty {
 
   /* ✅ 내부 실제 텍스트/이미지들이 들어가는 컨테이너도 함께 조정 */
   .notion-page.notion-page-no-cover.notion-page-has-icon .notion-page-content-inner {
-    max-width: 720px !important;
+    max-width: var(--notion-max-width-page-inner) !important;
     width: 100% !important;
     margin: 0 auto !important;
   }
 
   .notion-page-content-inner {
     padding: 16px;
+    max-width: var(--notion-max-width-page-inner);
   }
 
   .top-toc, .notion-top-toc {
-    max-width: 720px;
+    max-width: var(--notion-max-width-page-inner);
     margin-left: auto !important;
     margin-right: auto !important;
   }
@@ -1897,10 +1961,14 @@ nav.top-toc:empty {
   
 
 /* 📌 1100px 이상 (데스크탑) - 사이드바 가로 배치 강제 */
-@media (min-width: 1100px) {
+@media (min-width: 968px) {
 
   .notion-page-content-inner {
     padding: 16px;
+  }
+
+  .notion-page .notion-page-has-cover .notion-page-no-icon .notion-title {
+    max-width: 968px;
   }
 
   /* 1. 부모: block 제거하고 flex로 고정 */
@@ -1920,9 +1988,20 @@ nav.top-toc:empty {
   .notion-page.notion-page-no-cover.notion-page-has-icon
   .notion-page-content-inner {
     width: 100% !important;
-    max-width: 720px !important;
+    max-width: var(--notion-max-width-page-inner) !important;
     margin: 0 !important;
     flex-shrink: 1 !important;
+  }
+
+  .notion-page-content-has-aside {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .notion-page-content-has-aside .notion-page-content-inner {
+    max-width: var(--notion-max-width-page-inner) !important;
+    display: flex !important;
+    justify-content: space-between !important; /* 핵심: 양 끝 밀착 */
   }
 
   /* 3. 사이드바: 고정 및 노출 */
@@ -1936,5 +2015,24 @@ nav.top-toc:empty {
 
   .top-toc, .notion-top-toc {
     display: none !important;
+  }
+}
+
+@media (min-width: 1300px) {
+  .notion-frame {
+    max-width: 1096px !important;
+  }
+
+  .notion-header {
+    max-width: 1096px !important;
+  }
+
+  .notion-page {
+    max-width: 1096px !important;
+    width: 100%;
+  }
+
+  .notion-page-content-has-aside {
+    width: 1048px;
   }
 }
