@@ -593,6 +593,12 @@
   height: 128px;
 }
 
+.notion-page-title
+
+.notion-page-icon-inline.notion-page-icon-image {
+  border-radius: 32px;
+}
+
 .notion-page-title-text {
   border-bottom: 0;
   font-size: 1rem;
@@ -698,9 +704,10 @@ img.notion-page-title-icon {
 
 /*갤러리*/
 
+/* 기본 공통 구조 (기존 코드 활용) */
 .notion-page-content-inner .notion-gallery-grid {
-  grid-template-columns: repeat(auto-fill, minmax(256px,1fr));
-  max-width: 100%; /* ✅ notion-page-content-inner에 맞춤 */
+  display: grid !important;
+  max-width: 100%;
   gap: 3vmin;
   row-gap: 3vmin;
   justify-content: center;
@@ -709,8 +716,63 @@ img.notion-page-title-icon {
   padding-right: 4px;
 }
 
+/* [데스크탑/공통] 갤러리 사이즈별 그리드 설정 */
+
+/* ✅ 1. Small 설정일 때: 카드를 더 작게 배치 */
+.notion-gallery-grid-size-small {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+}
+
+/* ✅ 2. Medium 설정일 때: 기본 설정 유지 */
+.notion-gallery-grid-size-medium {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+}
+
+/* ✅ 3. Large 설정일 때: 카드를 더 크게 배치 (380px 이상) */
+.notion-gallery-grid-size-large {
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)) !important;
+}
+
+/* ✅ 4. Large 전용: 이미지 16:9 비율 강제 적용 */
+.notion-gallery-grid-size-large .notion-collection-card-cover {
+  aspect-ratio: 16 / 9 !important; 
+  height: auto !important; 
+  min-height: auto !important;
+}
+
+/* [모바일] 480px 이하 대응 */
+@media (max-width: 480px) {
+  /* Medium, Large 사이즈는 모바일에서 1열로 고정하여 짤림 방지 */
+  .notion-gallery-grid-size-medium,
+  .notion-gallery-grid-size-large {
+    grid-template-columns: 1fr !important; 
+    gap: 16px !important;
+  }
+
+  /* Small 사이즈는 모바일에서 2열로 배치 */
+  .notion-gallery-grid-size-small {
+    grid-template-columns: 1fr 1fr !important; /* 2열 배치 핵심 */
+    gap: 12px !important; /* 2열일 때는 간격을 살짝 좁힘 */
+  }
+
+  /* Large 사이즈: 모바일 1열에서도 16:9 비율 유지 및 짤림 방지 */
+  .notion-gallery-grid-size-large .notion-collection-card-cover {
+    aspect-ratio: 16 / 9 !important;
+    width: 100% !important; 
+  }
+
+  /* 카드 박스가 화면 밖으로 나가는 현상 방지 */
+  .notion-collection-card {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important; /* 2열 배치 방해 요소 제거 */
+  }
+}
+
+
 .notion-gallery-grid {
   border-top: 0;
+  grid-auto-rows: auto !important;
 }
 
 .notion-gallery-grid .notion-page-icon-inline {
@@ -718,7 +780,7 @@ img.notion-page-title-icon {
 }
 
 .notion-gallery-grid .notion-page-title-text {
-  font-size: 1.5em;
+  font-size: 1.4em;
   white-space: unset;
 }
 
@@ -812,12 +874,134 @@ img.notion-page-title-icon {
   transition: all 0.3s ease-in-out;
 }
 
+.notion-page-link, 
+.notion-page-title, 
+.notion-collection-card-body {
+  overflow: visible !important; /* 자식 요소가 튀어나오는 것을 허용 */
+  white-space: normal !important; /* 텍스트 줄바꿈 설정이 아이콘을 누르지 않게 함 */
+}
+
+/* 2. 아이콘 자체의 안전 거리 확보 */
+.notion-page-title {
+  position: relative !important;
+  /* 아이콘 주위에 투명한 여백을 주어 회전할 공간을 미리 확보함 */
+  padding: 8px 8px 0 8px !important;
+}
+
+/* 1. 홀로그램 애니메이션: 1회만 반짝이고 끝남 */
+@keyframes holo-sparkle-once {
+  0% { background-position: 0% 50%; opacity: 0; }
+  25% { background-position: 100% 50%; opacity: 0.2; }
+  50% { background-position: 0% 50%; opacity: 0.1;}
+  75% { background-position: 50% 50%; opacity: 0.2;}
+  100% { background-position: 50% 50%; opacity: 0.0; }
+}
+
+/* 2. 시계방향 비틀거리기: 작게 */
+@keyframes coin-spiral-soft {
+  0% { transform: translateY(0) rotateX(0) rotateY(0) scale(1); }
+  25% { transform: translateY(-0.5px) rotateX(2deg) rotateY(3deg) scale(1.02); }
+  50% { transform: translateY(-6px) rotateX(-0.5deg) rotateY(-3deg) scale(1.01); }
+  75% { transform: translateY(-2px) rotateX(0.5deg) rotateY(-1deg) scale(1); }
+  100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg) scale(1); }
+}
+
+@keyframes icon-spiral-strong {
+  0% { transform: translateY(0) rotateX(0) rotateY(0) scale(1); }
+  10% { transform: translateY(6px) rotateX(-8deg) rotateY(0deg) scale(0.98); }
+  30% { transform: translateY(0px) rotateX(0deg) rotateY(90deg) scale(1); }
+  60% { transform: translateY(-6px) rotateX(8deg) rotateY(-18deg) scale(1.02); } 
+  100% { transform: translateY(0) rotateX(0) rotateY(0) scale(1); }
+}
+
+@keyframes icon-jelly {
+  0% { transform: translateY(0) rotateX(0) rotateY(0) scale(1); }
+  10% { transform: translateY(1px) rotateX(-4deg) rotateY(12deg) scale(0.98); }
+  25% { transform: translateY(-1px) rotateX(-4deg) rotateY(12deg) scale(1.05); } 
+  50% { transform: translateY(-4px) rotateX(4deg) rotateY(-12deg) scale(1); }
+  75% { transform: translateY(1px) rotateX(2deg) rotateY(6deg) scale(1); }
+  100% { transform: translateY(0) rotateX(0) rotateY(0) scale(1); }
+}
+
+/* 1, 2번 애니메이션 정의(@keyframes)는 기존과 동일하게 유지하세요 */
+
+/* 3. 카드 및 아이콘 부모 설정 */
+.notion-collection-card {
+  perspective: 1600px !important;
+  background-color: transparent !important;
+}
+
+.notion-page-link, 
+.notion-page-title, 
+.notion-collection-card-body,
+.notion-collection-card-body .notion-page-icon-inline.notion-page-icon-image {
+  overflow: visible !important;
+  perspective: 800px !important; /* 숫자가 작을수록 입체감이 강해집니다 */
+}
+
+/* 4. 대상 오브젝트 기본 설정 및 복귀 딜레이 */
+.notion-collection-card-cover, 
+.notion-collection-card-body .notion-page-icon-inline.notion-page-icon-image {
+  position: relative !important;
+  /* 마우스를 뗐을 때 애니메이션 시간(0.8s)만큼 기다렸다가 돌아옴 */
+  transition: transform 0.6s ease-out 0.8s, box-shadow 0.6s ease-out 0.8s !important;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+/* 2. 카드 커버 호버 (기존 유지) */
 .notion-collection-card:hover .notion-collection-card-cover {
-  filter: brightness(120%);
+  transition: transform 0s, box-shadow 0s !important; 
+  animation: coin-spiral-soft 0.8s ease-out forwards !important; /* 기존 애니메이션 */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4) !important; 
+  z-index: 20;
+}
+
+/* 3. 아이콘 호버 (아이콘 전용 애니메이션 연결) */
+.notion-collection-card:hover .notion-page-icon-inline.notion-page-icon-image {
+  transition: transform 0s, box-shadow 0s !important; 
+  /* 새로 만든 강력한 애니메이션(icon-spiral-strong)을 연결 */
+  animation: icon-spiral-strong 0.8s ease-out forwards !important;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.1) !important; 
+  z-index: 20;
+}
+
+/* 6. 호버 시: 홀로그램 효과 (::before 설정) */
+.notion-collection-card-cover::before, 
+.notion-collection-card-body .notion-page-icon-inline.notion-page-icon-image::before {
+  content: "" !important;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 10;
+  background: linear-gradient(110deg, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,0.2) 45%, 
+    rgba(100,200,255,0.3) 50%, 
+    rgba(255,100,200,0.1) 55%, 
+    rgba(255,255,255,0) 100%
+  );
+  background-size: 200% 200%;
+  mix-blend-mode: color-dodge;
+  opacity: 0;
+  transition: opacity 0.6s ease-out 0.8s !important;
+  pointer-events: none;
+}
+
+/* 호버 시 홀로그램 재생 */
+.notion-collection-card:hover .notion-collection-card-cover::before,
+.notion-collection-card:hover .notion-collection-card-body .notion-page-icon-inline.notion-page-icon-image::before {
+  opacity: 1;
+  transition: opacity 0s !important;
+  animation: holo-sparkle-once 0.8s ease-out forwards;
+}
+
+
+.notion-collection-card {
+  padding: 8px;
 }
 
 .notion-collection-card-body {
-  padding: 8px;
+  padding: 12px 8px;
 }
 
 /* only target safari */
