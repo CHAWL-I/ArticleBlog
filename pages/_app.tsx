@@ -72,8 +72,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <main>
         <Component {...pageProps} />
       </main>
-      {/* 2. main 태그 밖이나 안, 어디든 상관없지만 관례상 끝에 배치합니다 */}
+      {/* vercel 방문자수 분석 */}
       <Analytics />
+      
+      {/* cloudflare 방문자수 분석 */}
+      <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "f2cc485e63b84e818867ec28b5ea8a8f"}'></script>
     </>
   )
 }
