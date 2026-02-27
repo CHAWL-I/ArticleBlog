@@ -11,6 +11,7 @@ import * as Fathom from 'fathom-client'
 import { useRouter } from 'next/router'
 import posthog from 'posthog-js'
 import * as React from 'react'
+import { Analytics } from '@vercel/analytics/react'; // 방문자수 분석 관련
 
 /* import { useNotionContext } from 'react-notion-x' // ✅ Notion 컨텍스트 불러오기 */
 import { bootstrap } from '@/lib/bootstrap-client'
@@ -71,6 +72,8 @@ export default function App({ Component, pageProps }: AppProps) {
       <main>
         <Component {...pageProps} />
       </main>
+      {/* 2. main 태그 밖이나 안, 어디든 상관없지만 관례상 끝에 배치합니다 */}
+      <Analytics />
     </>
   )
 }
