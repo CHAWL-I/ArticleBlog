@@ -12,7 +12,9 @@ import {
   navigationLinks,
   navigationStyle
 } from './config'
+import { ensureBlockIds } from './ensure-block-ids'
 import { getTweetsMap } from './get-tweets'
+import { loadNotionRecordMap } from './notion-load-record-map'
 import { notion } from './notion-api'
 import { getPreviewImageMap } from './preview-images'
 
@@ -26,12 +28,7 @@ const getNavigationLinkPages = pMemoize(
       return pMap(
         navigationLinkPageIds,
         async (navigationLinkPageId) =>
-          notion.getPage(navigationLinkPageId, {
-            chunkLimit: 1,
-            fetchMissingBlocks: false,
-            fetchCollections: false,
-            signFileUrls: false
-          }),
+          loadNotionRecordMap(navigationLinkPageId),
         {
           concurrency: 4
         }
@@ -43,7 +40,7 @@ const getNavigationLinkPages = pMemoize(
 )
 
 export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
-  let recordMap = await notion.getPage(pageId)
+  let recordMap = await loadNotionRecordMap(pageId)
 
   if (navigationStyle !== 'default') {
     // ensure that any pages linked to in the custom navigation header have
@@ -66,6 +63,8 @@ export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
   }
 
   await getTweetsMap(recordMap)
+
+  ensureBlockIds(recordMap)
 
   return recordMap
 }

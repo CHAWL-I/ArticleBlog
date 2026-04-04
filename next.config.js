@@ -11,6 +11,12 @@ export default withBundleAnalyzer({
   output: 'export', 
   trailingSlash: true, // 주소 끝에 /를 붙여 폴더 구조로 생성함
 
+  // Notion 비공개 API는 병렬 요청이 많으면 429를 반환합니다.
+  experimental: {
+    cpus: 1,
+    staticGenerationMaxConcurrency: 1
+  },
+
   // ✅ 이 부분을 추가하면 "안 쓰는 변수" 에러가 있어도 무시하고 배포합니다.
   eslint: {
     ignoreDuringBuilds: true,
