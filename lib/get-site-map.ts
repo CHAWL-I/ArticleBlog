@@ -4,9 +4,8 @@ import pMemoize from 'p-memoize'
 import type * as types from './types'
 import * as config from './config'
 import { includeNotionIdInUrls } from './config'
-import { ensureBlockIds } from './ensure-block-ids'
 import { getCanonicalPageId } from './get-canonical-page-id'
-import { loadNotionRecordMap } from './notion-load-record-map'
+import { notion } from './notion-api'
 
 const uuid = !!includeNotionIdInUrls
 
@@ -26,11 +25,9 @@ const getAllPages = pMemoize(getAllPagesImpl, {
   cacheKey: (...args) => JSON.stringify(args)
 })
 
-const getPage = async (pageId: string) => {
+const getPage = async (pageId: string, ...args) => {
   console.log('\nnotion getPage', uuidToId(pageId))
-  const recordMap = await loadNotionRecordMap(pageId)
-  ensureBlockIds(recordMap)
-  return recordMap
+  return notion.getPage(pageId, ...args)
 }
 
 async function getAllPagesImpl(
@@ -40,8 +37,7 @@ async function getAllPagesImpl(
   const pageMap = await getAllPagesInSpace(
     rootNotionPageId,
     rootNotionSpaceId,
-    getPage,
-    { concurrency: 1 }
+    getPage
   )
 
   const canonicalPageMap = Object.keys(pageMap).reduce(
