@@ -6,20 +6,26 @@ export const getStaticProps = async () => {
   try {
     const props = await resolveNotionPage(domain)
 
-    // [수정 포인트] 모든 undefined 값을 JSON이 이해할 수 있는 null로 변환합니다.
+    // undefined 값을 null로 변환하여 JSON 직렬화 에러 방지
     const safeProps = JSON.parse(
       JSON.stringify(props, (key, value) => 
         value === undefined ? null : value
       )
     )
     
-    return { props: safeProps }
+    return { 
+      props: safeProps,
+      // ✅ 추가: 정적 빌드 후 1시간 동안은 캐시된 데이터를 우선 사용합니다.
+      revalidate: 3600 
+    }
   } catch (err) {
     console.error('page error', domain, err)
 
-    // we don't want to publish the error version of this page, so
-    // let next.js know explicitly that incremental SSG failed
-    throw err
+    // ✅ 수정: 에러 발생 시 빌드를 중단하지 않고 404 처리 후 1분 뒤 재시도하게 합니다.
+    return {
+      notFound: true,
+      revalidate: 60 
+    }
   }
 }
 
